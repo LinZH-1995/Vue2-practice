@@ -1,4 +1,10 @@
 <script>
+import UserProfileCardComponent from '../components/UserProfileCardComponent.vue'
+import UserFollowingsCardComponent from '../components/UserFollowingsCardComponent.vue'
+import UserFollowersCardComponent from '../components/UserFollowersCardComponent.vue'
+import UserCommentsCardComponent from '../components/UserCommentsCardComponent.vue'
+import UserFavoritedRestaurantsCardComponent from '../components/UserFavoritedRestaurantsCardComponent.vue'
+
 const dummyData = {
   'profile': {
     'id': 1,
@@ -1174,20 +1180,41 @@ const dummyData = {
   'isFollowed': false
 }
 
-export default {
-  components: {},
+const dummyUser = {
+  "id": 2,
+  "name": "root",
+  "email": "root@example.com",
+  "image": null,
+  "isAdmin": true
+}
 
-  data: function() {
+export default {
+  components: {
+    UserProfileCardComponent,
+    UserFollowingsCardComponent,
+    UserFollowersCardComponent,
+    UserCommentsCardComponent,
+    UserFavoritedRestaurantsCardComponent
+  },
+
+  data: function () {
     return {
-      profile: {},
-      isFollowed: null
+      user: {},
+      isFollowed: null,
+      currentUser: dummyUser
     }
   },
 
   methods: {
     fetchUser(userId) {
       console.log('userId', userId)
-      this.profile = dummyData.profile
+      this.user = {
+        ...dummyData.profile,
+        commentCounts: dummyData.profile.Comments.length,
+        favoritedRestaurantsCounts: dummyData.profile.FavoritedRestaurants.length,
+        followersCounts: dummyData.profile.Followers.length,
+        followingsCounts: dummyData.profile.Followings.length
+      }
       this.isFollowed = dummyData.isFollowed
     }
   },
@@ -1201,5 +1228,16 @@ export default {
 
 <template>
   <div class="container py-5">
+    <UserProfileCardComponent :user="user" :is-current-user="currentUser.id === user.id" :initial-is-followed="isFollowed" />
+    <div class="row">
+      <div class="col-md-4">
+        <UserFollowingsCardComponent :followings="user.Followings" />
+        <UserFollowersCardComponent :followers="user.Followers" />
+      </div>
+      <div class="col-md-8">
+        <UserCommentsCardComponent :comments="user.Comments" />
+        <UserFavoritedRestaurantsCardComponent :favorited-restaurants="user.FavoritedRestaurants" />
+      </div>
+    </div>
   </div>
 </template>
