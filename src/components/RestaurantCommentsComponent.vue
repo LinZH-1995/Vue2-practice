@@ -50,7 +50,7 @@ export default {
         <blockquote class="blockquote d-flex justify-content-between">
           <div>
             <h3>
-              <router-link to="#">
+              <router-link :to="{ name: 'user', params: { id: comment.UserId } }">
                 {{ comment.User.name }}
               </router-link>
             </h3>

@@ -57,6 +57,11 @@ const router = new VueRouter({
       component: () => import('../views/UsersTopView.vue')
     },
     {
+      path: '/users/:id',
+      name: 'user',
+      component: () => import('../views/UserView.vue')
+    },
+    {
       path: '*',
       name: 'not-found',
       component: NotFoundView,

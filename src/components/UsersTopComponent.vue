@@ -23,9 +23,9 @@ export default {
 
 <template>
   <div class="col-3">
-    <a href="#">
+    <router-link :to="{ name: 'user', params: { id: user.id } }">
       <img :src="user.image ?? 'http://via.placeholder.com/300x300?text=No+Image'" width="140px" height="140px">
-    </a>
+    </router-link>
     <h2>{{ user.name }}</h2>
     <span class="badge rounded-pill text-bg-secondary">追蹤人數：{{  user.FollowerCount }}</span>
     <p class="mt-3">

@@ -25,7 +25,7 @@ export default {
           <router-link :to="{ name: 'restaurant', params: { id: comment.Restaurant.id } }">{{ comment.Restaurant.name }}</router-link>
         </h4>
         <p>{{ comment.text }}</p>
-        by <a href="#">{{ comment.User.name }}</a> at {{ comment.createdAt | dateFromNow }}
+        by <router-link :to="{ name: 'user', params: { id: comment.UserId } }">{{ comment.User.name }}</router-link> at {{ comment.createdAt | dateFromNow }}
         <hr>
       </div>
     </div>
