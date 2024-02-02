@@ -1,20 +1,13 @@
 <script>
-import moment from 'moment'
+import { dateFromNowFilter } from '../utils/mixins'
 
 export default {
+  mixins:[dateFromNowFilter],
+
   props: {
     comments: {
       type: Array,
       required: true
-    }
-  },
-
-  filters: {
-    dateFromNow(datetime) {
-      if (!datetime) {
-        return '--'
-      }
-      return moment(datetime).fromNow()
     }
   }
 }
@@ -29,7 +22,7 @@ export default {
     <div class="card-body">
       <div v-for="comment in comments" :key="comment.id">
         <h4 class="mb-3">
-          <a href="#">{{ comment.Restaurant.name }}</a>
+          <router-link :to="{ name: 'restaurant', params: { id: comment.Restaurant.id } }">{{ comment.Restaurant.name }}</router-link>
         </h4>
         <p>{{ comment.text }}</p>
         by <a href="#">{{ comment.User.name }}</a> at {{ comment.createdAt | dateFromNow }}

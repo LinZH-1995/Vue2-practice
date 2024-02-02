@@ -1,20 +1,13 @@
 <script>
-import moment from 'moment'
+import { dateFromNowFilter } from '../utils/mixins'
 
 export default {
+  mixins: [dateFromNowFilter],
+
   props: {
     restaurants: {
       type: Array,
       required: true
-    }
-  },
-
-  filters: {
-    dateFromNow(datetime) {
-      if (!datetime) {
-        return '--'
-      }
-       return moment(datetime).fromNow()
     }
   }
 }
@@ -29,7 +22,7 @@ export default {
     <div class="card-body">
       <div v-for="restaurant in restaurants" :key="restaurant.id">
         <h4 class="mb-3">
-          <router-link to="#" class="me-2">{{ restaurant.name }}</router-link>
+          <router-link :to="{ name: 'restaurant', params: { id: restaurant.id } }" class="me-2">{{ restaurant.name }}</router-link>
           <small>{{ restaurant.Category?.name ?? '未分類' }}</small>
         </h4>
         <p>{{ restaurant.description }}</p>

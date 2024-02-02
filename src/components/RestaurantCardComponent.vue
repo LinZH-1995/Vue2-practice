@@ -30,7 +30,7 @@ export default {
       <img class="card-img-top" :src="restaurant.image" alt="Card image cap" width="286px" height="180px">
       <div class="card-body">
         <p class="card-text title-wrap">
-          <router-link to="#">{{ restaurant.name }}</router-link>
+          <router-link :to="{ name: 'restaurant', params: { id: restaurant.id } }">{{ restaurant.name }}</router-link>
         </p>
         <span class="badge rounded-pill text-bg-secondary mb-2">{{ restaurant.Category.name }}</span>
         <p class="card-text text-truncate">

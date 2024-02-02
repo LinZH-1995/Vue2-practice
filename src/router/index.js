@@ -42,6 +42,11 @@ const router = new VueRouter({
       component: () => import('../views/RestaurantsTopView.vue')
     },
     {
+      path: '/restaurants/:id',
+      name: 'restaurant',
+      component: () => import('../views/RestaurantView.vue')
+    },
+    {
       path: '/users/top',
       name: 'users-top',
       component: () => import('../views/UsersTopView.vue')
