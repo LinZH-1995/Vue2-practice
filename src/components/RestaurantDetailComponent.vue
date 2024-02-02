@@ -52,7 +52,7 @@ export default {
       </div>
     </div>
     <div class="col-lg-8">
-      <router-link class="btn btn-primary btn-border me-2" to="#">Dashboard</router-link>
+      <router-link class="btn btn-primary btn-border me-2" :to="{ name: 'restaurant-dashboard', params: { id: restaurant.id } }">Dashboard</router-link>
 
       <template>
         <button type="button" class="btn btn-danger btn-border me-2" v-if="restaurant.isFavorited" @click.stop.prevent="toggleFavorite">
