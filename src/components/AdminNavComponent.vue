@@ -4,8 +4,8 @@
 <template>
   <div class="mb-3">
     <h1>餐廳後台</h1>
-    <router-link to="#" class="me-2">Restaurants</router-link> |
-    <router-link to="#" class="mx-2">Categories</router-link> |
-    <router-link to="#" class="ms-2">Users</router-link>
+    <router-link :to="{}" class="me-2">Restaurants</router-link> |
+    <router-link :to="{}" class="mx-2">Categories</router-link> |
+    <router-link :to="{}" class="ms-2">Users</router-link>
   </div>
 </template>
