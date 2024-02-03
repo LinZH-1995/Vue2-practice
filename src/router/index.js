@@ -72,6 +72,11 @@ const router = new VueRouter({
       component: () => import('../views/AdminView.vue')
     },
     {
+      path: '/admin/restaurants/:id',
+      name: 'admin-restaurant',
+      component: () => import('../views/AdminRestaurantView.vue')
+    },
+    {
       path: '*',
       name: 'not-found',
       component: NotFoundView,
