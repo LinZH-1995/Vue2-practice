@@ -14,7 +14,7 @@ export default {
   <div class="container py-5">
     <AdminNavComponent />
 
-    <router-link :to="{}" class="btn btn-primary mb-4">
+    <router-link to="/admin/restaurants/new" class="btn btn-primary mb-4">
       New Restaurant
     </router-link>
 
