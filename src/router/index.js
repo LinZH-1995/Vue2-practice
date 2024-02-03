@@ -62,6 +62,16 @@ const router = new VueRouter({
       component: () => import('../views/UserView.vue')
     },
     {
+      path: '/admin',
+      name: 'admin',
+      redirect: '/admin/restaurants'
+    },
+    {
+      path: '/admin/restaurants',
+      name: 'admin-restaurants',
+      component: () => import('../views/AdminView.vue')
+    },
+    {
       path: '*',
       name: 'not-found',
       component: NotFoundView,
