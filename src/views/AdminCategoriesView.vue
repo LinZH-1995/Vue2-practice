@@ -102,7 +102,7 @@ export default {
     </form>
 
     <table class="table">
-      <thead class="thead-dark">
+      <thead class="table-dark">
         <tr>
           <th scope="col" width="60">#</th>
           <th scope="col">Category Name</th>
@@ -117,7 +117,7 @@ export default {
 
             <input v-show="category.id === editCategory.id" v-model="editCategory.name"
               v-edit-focus="category.id === editCategory.id" type="text" class="form-control">
-            <span v-show="category.id === editCategory.id" @click="handleCancel" class="cancel btn">✕</span>
+            <span v-show="category.id === editCategory.id" @click.stop.prevent="handleCancel" class="cancel btn">✕</span>
           </td>
           <td class="d-flex justify-content-between">
             <button v-show="category.id !== editCategory.id" @click.stop.prevent="startEdit(category)" type="button"

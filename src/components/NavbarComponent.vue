@@ -50,7 +50,7 @@ export default {
       </router-link>
 
       <div class="d-flex me-2" role="search">
-        <router-link v-if="currentUser.isAdmin" :to="{ name: 'admin' }" class="text-white me-3 my-1">
+        <router-link v-if="currentUser.isAdmin" to="/admin" class="text-white me-3 my-1">
           管理員後台
         </router-link>
         <template v-if="isAuthenticated">
