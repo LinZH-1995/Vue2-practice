@@ -59,7 +59,7 @@ export default {
             </li>
           </ul>
           <template v-if="isCurrentUser">
-            <router-link :to="{}" class="btn btn-primary">
+            <router-link :to="{ name: 'user-edit', params: { id: user.id } }" class="btn btn-primary">
               Edit
             </router-link>
           </template>

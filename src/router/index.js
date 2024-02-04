@@ -62,6 +62,11 @@ const router = new VueRouter({
       component: () => import('../views/UserView.vue')
     },
     {
+      path: '/users/:id/edit',
+      name: 'user-edit',
+      component: () => import('../views/EditUserProfileView.vue')
+    },
+    {
       path: '/admin',
       name: 'admin',
       redirect: '/admin/restaurants'
