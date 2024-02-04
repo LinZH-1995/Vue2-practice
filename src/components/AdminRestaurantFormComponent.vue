@@ -29,16 +29,31 @@ const dummyData = {
 }
 
 export default {
-  data() {
-    return {
-      restaurant: {
+  props: {
+    initialRestaurant: {
+      type: Object,
+      default: () => ({
         name: '',
-        categoryId: '',
+        CategoryId: '',
         tel: '',
         address: '',
         description: '',
         image: '',
-        openingHours: ''
+        opening_hours: '',
+      })
+    }
+  },
+
+  data() {
+    return {
+      restaurant: {
+        name: '',
+        CategoryId: '',
+        tel: '',
+        address: '',
+        description: '',
+        image: '',
+        opening_hours: ''
       },
       categories: []
     }
@@ -66,6 +81,10 @@ export default {
 
   created() {
     this.fetchCategories()
+    this.restaurant = {
+      ...this.restaurant,
+      ...this.initialRestaurant
+    }
   }
 }
 </script>
@@ -80,11 +99,11 @@ export default {
 
     <div class="form-group mb-2">
       <label for="categoryId" class="form-label">Category：</label>
-      <select v-model="restaurant.categoryId" id="categoryId" class="form-control" name="categoryId" required>
+      <select v-model="restaurant.CategoryId" id="categoryId" class="form-control" name="categoryId" required>
         <option value="" selected disabled>
           --請選擇--
         </option>
-        <option v-for="category in categories" :key="category.id" :value="category.id">
+        <option v-for="category in categories" :key="category.id" :value="category.id" :selected="restaurant.CategoryId === category.id">
           {{ category.name }}
         </option>
       </select>
@@ -104,7 +123,7 @@ export default {
 
     <div class="form-group mb-2">
       <label for="opening-hours" class="form-label">Opening Hours：</label>
-      <input v-model="restaurant.openingHours" id="opening-hours" type="time" class="form-control" name="opening_hours">
+      <input v-model="restaurant.opening_hours" id="opening-hours" type="time" class="form-control" name="opening_hours">
     </div>
 
     <div class="form-group mb-2">

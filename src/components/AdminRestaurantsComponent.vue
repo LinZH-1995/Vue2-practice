@@ -996,7 +996,7 @@ export default {
         <td class="d-flex justify-content-between">
           <router-link :to="{ name: 'admin-restaurant', params: { id: restaurant.id } }"
             class="btn btn-link">Show</router-link>
-          <router-link :to="{}" class="btn btn-link">Edit</router-link>
+          <router-link :to="{ name: 'admin-restaurant-edit', params: { id: restaurant.id } }" class="btn btn-link">Edit</router-link>
           <button type="button" class="btn btn-link" @click.stop.prevent="deleteRestaurant(restaurant.id)">Delete</button>
         </td>
       </tr>
