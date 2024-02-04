@@ -77,6 +77,11 @@ const router = new VueRouter({
       component: () => import('../views/AdminView.vue')
     },
     {
+      path: '/admin/categories',
+      name: 'admin-categories',
+      component: () => import('../views/AdminCategoriesView.vue')
+    },
+    {
       path: '/admin/restaurants/new',
       name: 'admin-restaurant-new',
       component: () => import('../views/AdminAddRestaurantView.vue')
