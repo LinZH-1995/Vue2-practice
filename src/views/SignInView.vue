@@ -1,20 +1,53 @@
 <script>
+import { usersApi } from '../apis/users'
+import { Toast } from '../utils/sweetalert'
+import { crypto } from '../utils/crypto'
+
 export default {
   data: function () {
     return {
       email: '',
-      password: ''
+      password: '',
+      isProcessing: false
     };
   },
-  methods: {
-    handleSubmit() {
-      const data = JSON.stringify({
-        email: this.email,
-        password: this.password
-      })
 
-      // TODO: 向後端驗證使用者登入資訊是否合法
-      console.log('data', data)
+  methods: {
+    toggleIsProcessing() {
+      this.isProcessing = !this.isProcessing
+    },
+
+    async handleSubmit() {
+      try {
+        const email = this.email.trim()
+        const password = this.password.trim()
+        if (email === '' || password === '') {
+          return Toast.fire({ icon: 'warning', title: '所有欄位皆為必填!' })
+        }
+
+        this.toggleIsProcessing() // avoid double click submit button 
+        const response = await usersApi.signIn({ email, password })
+
+        const token = response.data.token
+        const encryptedToken = crypto.encrypted(token)
+        localStorage.setItem('token', encryptedToken)
+
+        this.$router.push('/restaurants') // equal <router-link :to="...URL...">
+
+        Toast.fire({ icon: 'success', title: '成功登入!' }) // trigger success sweetalert
+      } catch (error) {
+        this.toggleIsProcessing() // sigin fail then change isProcessing to false
+
+        // 將欄位清空
+        this.email = ''
+        this.password = ''
+
+        // trigger warning sweetalert
+        Toast.fire({ icon: 'warning', title: '請確認您輸入了正確的帳號密碼!' })
+        console.error(error)
+      }
+
+
     }
   }
 }
@@ -42,7 +75,7 @@ export default {
       </div>
 
       <div class="d-grid gap-3">
-        <button class="btn btn-primary" type="submit">Submit</button>
+        <button class="btn btn-primary" type="submit" :disabled="isProcessing">Submit</button>
         <router-link to="/signup" class="btn text-primary" role="button">Sign Up</router-link>
       </div>
 

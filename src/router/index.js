@@ -14,12 +14,12 @@ const router = new VueRouter({
     {
       path: '/',
       name: 'root',
-      redirect: '/restaurants'
+      redirect: '/signin'
     },
     {
       path: '/signin',
       name: 'sign-in',
-      component: SignInView,
+      component: SignInView
     },
     {
       path: '/signup',
@@ -104,7 +104,7 @@ const router = new VueRouter({
     {
       path: '*',
       name: 'not-found',
-      component: NotFoundView,
+      component: NotFoundView
     }
   ]
 })
