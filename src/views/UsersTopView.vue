@@ -1,50 +1,8 @@
 <script>
 import NavTabsComponent from '../components/NavTabsComponent.vue'
 import UsersTopComponent from '../components/UsersTopComponent.vue'
-
-const dummyData = {
-  "users": [
-    {
-      "id": 1,
-      "name": "root",
-      "email": "root@example.com",
-      "password": "$2a$10$imeDGioZkuOzi7fV/g3I.ekVZS.SecTN2yp93Gx5q0qGuSYd3GIu2",
-      "isAdmin": true,
-      "image": null,
-      "createdAt": "2024-01-31T07:20:03.000Z",
-      "updatedAt": "2024-01-31T07:20:03.000Z",
-      "Followers": [],
-      "FollowerCount": 0,
-      "isFollowed": false
-    },
-    {
-      "id": 2,
-      "name": "user1",
-      "email": "user1@example.com",
-      "password": "$2a$10$RRHRcZKVXOkLHyavs3OZ3uGOMKh3F0TmjiOZ82keF9LlgI/CDcHsy",
-      "isAdmin": false,
-      "image": null,
-      "createdAt": "2024-01-31T07:20:03.000Z",
-      "updatedAt": "2024-01-31T07:20:03.000Z",
-      "Followers": [],
-      "FollowerCount": 0,
-      "isFollowed": false
-    },
-    {
-      "id": 3,
-      "name": "user2",
-      "email": "user2@example.com",
-      "password": "$2a$10$jFzslGypP3tvjKg0iYfVYe/MHKTb.JjUqmVS3jXFZRC.LOm9nuFBW",
-      "isAdmin": false,
-      "image": null,
-      "createdAt": "2024-01-31T07:20:03.000Z",
-      "updatedAt": "2024-01-31T07:20:03.000Z",
-      "Followers": [],
-      "FollowerCount": 0,
-      "isFollowed": false
-    }
-  ]
-}
+import { usersApi } from '../apis/users'
+import { Toast } from '../utils/sweetalert'
 
 export default {
   components: {
@@ -52,20 +10,27 @@ export default {
     UsersTopComponent
   },
 
-  data: function() {
+  data: function () {
     return {
       users: []
     }
   },
 
   methods: {
-    fetchUsers() {
-      this.users = dummyData.users
+    async fetchTopUsers() {
+      try {
+        const response = await usersApi.getTopUsers()
+        this.users = response.data.users
+
+      } catch (error) {
+        Toast.fire({ icon: 'error', titleText: '無法取得美食達人，請稍後再試!' })
+        console.log(error)
+      }
     }
   },
 
   created() {
-    this.fetchUsers()
+    this.fetchTopUsers()
   }
 }
 </script>
@@ -78,7 +43,7 @@ export default {
     </h1>
     <hr>
     <div class="row text-center">
-      <UsersTopComponent v-for="user in users" :key="user.id" :init-user="user"/>
+      <UsersTopComponent v-for="user in users" :key="user.id" :init-user="user" />
     </div>
   </div>
 </template>
