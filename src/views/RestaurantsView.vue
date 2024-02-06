@@ -39,7 +39,6 @@ export default {
         this.previousPage = response.data.prev
         this.nextPage = response.data.next
 
-        console.log('response', response)
       } catch (error) {
         Toast.fire({ icon: 'error', titleText: '無法取得餐廳資料，請稍後再試!' })
         console.error(error)
