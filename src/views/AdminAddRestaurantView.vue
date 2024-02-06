@@ -1,18 +1,42 @@
 <script>
 import AdminRestaurantFormComponent from '../components/AdminRestaurantFormComponent.vue'
+import { adminApi } from '../apis/admin'
+import { Toast } from '../utils/sweetalert'
 
 export default {
   components: {
     AdminRestaurantFormComponent
   },
 
-  methods: {
-    handleAfterSubmit(formData) {
+  data: function () {
+    return {
+      isProcessing: false
+    }
+  },
 
-      // for test
-      for (let [name, value] of formData.entries()) {
-        console.log(name + ': ' + value)
+  methods: {
+    async handleAfterSubmit(formData) {
+      try {
+        this.toggleIsProcessing() // avoid double click submit button 
+
+        // force string value call trim()
+        for (let [key, value] of formData.entries()) {
+          if (typeof value === 'string') formData.set(key, value.trim())
+        }
+
+        const response = await adminApi.createRestaurant(formData)
+        if (response.data.status !== 'success') throw new Error(response.data.message)
+        this.$router.push('/admin/restaurants') // redirect to path, equal <router-link :to="...">
+
+      } catch (error) {
+        this.toggleIsProcessing() // sigin fail then change isProcessing to false
+        Toast.fire({ icon: 'error', titleText: '無法新增餐廳資料，請稍後再試!' })
+        console.error(error)
       }
+    },
+    
+    toggleIsProcessing() {
+      this.isProcessing = !this.isProcessing
     }
   }
 }
@@ -20,6 +44,6 @@ export default {
 
 <template>
   <div class="container py-5">
-    <AdminRestaurantFormComponent @after-submit="handleAfterSubmit" />
+    <AdminRestaurantFormComponent @after-submit="handleAfterSubmit" :is-processing="isProcessing" />
   </div>
 </template>

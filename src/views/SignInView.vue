@@ -75,7 +75,9 @@ export default {
       </div>
 
       <div class="d-grid gap-3">
-        <button class="btn btn-primary" type="submit" :disabled="isProcessing">Submit</button>
+        <button type="submit" class="btn btn-primary" v-if="isProcessing" disabled>處理中...</button>
+        <button type="submit" class="btn btn-primary" v-else>Submit</button>
+
         <router-link to="/signup" class="btn text-primary" role="button">Sign Up</router-link>
       </div>
 

@@ -1,32 +1,6 @@
 <script>
-const dummyData = {
-  categories: [
-    {
-      id: 1,
-      name: '中式料理',
-      createdAt: '2019-06-22T09:00:43.000Z',
-      updatedAt: '2019-06-22T09:00:43.000Z'
-    },
-    {
-      id: 2,
-      name: '日本料理',
-      createdAt: '2019-06-22T09:00:43.000Z',
-      updatedAt: '2019-06-22T09:00:43.000Z'
-    },
-    {
-      id: 3,
-      name: '義大利料理',
-      createdAt: '2019-06-22T09:00:43.000Z',
-      updatedAt: '2019-06-22T09:00:43.000Z'
-    },
-    {
-      id: 4,
-      name: '墨西哥料理',
-      createdAt: '2019-06-22T09:00:43.000Z',
-      updatedAt: '2019-06-22T09:00:43.000Z'
-    }
-  ]
-}
+import { adminApi } from '../apis/admin'
+import { Toast } from '../utils/sweetalert'
 
 export default {
   props: {
@@ -41,6 +15,12 @@ export default {
         image: '',
         opening_hours: '',
       })
+    },
+    
+    isProcessing: {
+      type: Boolean,
+      required: true,
+      default: false
     }
   },
 
@@ -55,14 +35,24 @@ export default {
         image: '',
         opening_hours: ''
       },
-      categories: []
+      categories: [],
+      isLoading: true  // if loading disable form, if load success set value = false
     }
   },
 
   methods: {
-    fetchCategories() {
-      this.categories = dummyData.categories
+    async fetchCategories() {
+      try {
+        const response = await adminApi.getAdminCategories()
+        this.categories = response.data.categories
+        this.isLoading = false
+
+      } catch (error) {
+        Toast.fire({ icon: 'error', titleText: '無法取得餐廳類別資料，請稍後再試!' })
+        console.error(error)
+      }
     },
+
     handleFileChange(e) {
       const files = e.target.files // files[]
       if (files.length === 0) {
@@ -72,8 +62,21 @@ export default {
         this.restaurant.image = imageURL
       }
     },
+
     handleSubmit(e) {
       const form = e.target  // <form>...</form>
+
+      // avoid use devtool change DOM tree required attribute
+      // step1. check categoryId isExist
+      const categoryId = form[1].value.trim()
+      const isExist =  this.categories.some(category => category.id.toString() === categoryId)
+      if (!isExist) return Toast.fire({ icon: 'warning', titleText: '類別不存在!' })
+
+      // step2. check required data isExist
+      const name = form[0].value.trim()
+      const address = form[3].value.trim()
+      if (name === '' || address === '') return Toast.fire({ icon: 'warning', titleText: '必填欄位不可為空!' })
+      
       const formData = new FormData(form)
       this.$emit('after-submit', formData)
     }
@@ -90,20 +93,23 @@ export default {
 </script>
 
 <template>
-  <form @submit.stop.prevent="handleSubmit">
+  <form @submit.stop.prevent="handleSubmit" v-if="!isLoading">
+    <div class="form-group mb-3">* 為必填欄位</div>
+
     <div class="form-group mb-2">
-      <label for="name" class="form-label">Name：</label>
+      <label for="name" class="form-label">* Name：</label>
       <input v-model="restaurant.name" id="name" type="text" class="form-control" name="name" placeholder="Enter name"
         required>
     </div>
 
     <div class="form-group mb-2">
-      <label for="categoryId" class="form-label">Category：</label>
+      <label for="categoryId" class="form-label">* Category：</label>
       <select v-model="restaurant.CategoryId" id="categoryId" class="form-control" name="categoryId" required>
         <option value="" selected disabled>
           --請選擇--
         </option>
-        <option v-for="category in categories" :key="category.id" :value="category.id" :selected="restaurant.CategoryId === category.id">
+        <option v-for="category in categories" :key="category.id" :value="category.id"
+          :selected="restaurant.CategoryId === category.id">
           {{ category.name }}
         </option>
       </select>
@@ -116,7 +122,7 @@ export default {
     </div>
 
     <div class="form-group mb-2">
-      <label for="address" class="form-label">Address：</label>
+      <label for="address" class="form-label">* Address：</label>
       <input v-model="restaurant.address" id="address" type="text" class="form-control" placeholder="Enter address"
         name="address" required>
     </div>
@@ -138,8 +144,7 @@ export default {
       <img v-if="restaurant.image" :src="restaurant.image" class="d-block img-thumbnail mb-3" width="200" height="200">
     </div>
 
-    <button type="submit" class="btn btn-primary">
-      送出
-    </button>
+    <button type="submit" class="btn btn-primary" v-if="isProcessing" disabled>處理中...</button>
+    <button type="submit" class="btn btn-primary" v-else>送出</button>
   </form>
 </template>
