@@ -16,7 +16,7 @@ export default {
         opening_hours: '',
       })
     },
-    
+
     isProcessing: {
       type: Boolean,
       required: true,
@@ -69,14 +69,14 @@ export default {
       // avoid use devtool change DOM tree required attribute
       // step1. check categoryId isExist
       const categoryId = form[1].value.trim()
-      const isExist =  this.categories.some(category => category.id.toString() === categoryId)
+      const isExist = this.categories.some(category => category.id.toString() === categoryId)
       if (!isExist) return Toast.fire({ icon: 'warning', titleText: '類別不存在!' })
 
       // step2. check required data isExist
       const name = form[0].value.trim()
       const address = form[3].value.trim()
       if (name === '' || address === '') return Toast.fire({ icon: 'warning', titleText: '必填欄位不可為空!' })
-      
+
       const formData = new FormData(form)
       this.$emit('after-submit', formData)
     }
@@ -84,9 +84,11 @@ export default {
 
   created() {
     this.fetchCategories()
-    this.restaurant = {
-      ...this.restaurant,
-      ...this.initialRestaurant
+  },
+
+  watch: {
+    initialRestaurant(newData) { // watch initialRestaurant props, if parent component get data then refresh
+      this.restaurant = { ...this.restaurant, ...newData }
     }
   }
 }
@@ -146,5 +148,6 @@ export default {
 
     <button type="submit" class="btn btn-primary" v-if="isProcessing" disabled>處理中...</button>
     <button type="submit" class="btn btn-primary" v-else>送出</button>
+    <button type="button" class="btn btn-link ms-5" @click="$router.back()">回上一頁</button>
   </form>
 </template>

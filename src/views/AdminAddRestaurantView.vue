@@ -29,7 +29,7 @@ export default {
         this.$router.push('/admin/restaurants') // redirect to path, equal <router-link :to="...">
 
       } catch (error) {
-        this.toggleIsProcessing() // sigin fail then change isProcessing to false
+        this.toggleIsProcessing() // fail then change isProcessing to false
         Toast.fire({ icon: 'error', titleText: '無法新增餐廳資料，請稍後再試!' })
         console.error(error)
       }

@@ -19,5 +19,13 @@ export const adminApi = {
 
   deleteRestaurant(restaurantId) {
     return axiosInstance.delete(`/admin/restaurants/${restaurantId}`, { headers })
+  },
+
+  getRestaurant(restaurantId) {
+    return axiosInstance.get(`/admin/restaurants/${restaurantId}`, { headers })
+  },
+
+  editRestaurant(restaurantId, formData) {
+    return axiosInstance.put(`/admin/restaurants/${restaurantId}`, formData, { headers })
   }
 }
