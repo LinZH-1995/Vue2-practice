@@ -22,7 +22,7 @@ export default {
         const email = this.email.trim()
         const password = this.password.trim()
         if (email === '' || password === '') {
-          return Toast.fire({ icon: 'warning', title: '所有欄位皆為必填!' })
+          return Toast.fire({ icon: 'warning', titleText: '所有欄位皆為必填!' })
         }
 
         this.toggleIsProcessing() // avoid double click submit button 
@@ -34,7 +34,7 @@ export default {
 
         this.$router.push('/restaurants') // equal <router-link :to="...URL...">
 
-        Toast.fire({ icon: 'success', title: '成功登入!' }) // trigger success sweetalert
+        Toast.fire({ icon: 'success', titleText: '成功登入!' }) // trigger success sweetalert
       } catch (error) {
         this.toggleIsProcessing() // sigin fail then change isProcessing to false
 
@@ -43,7 +43,7 @@ export default {
         this.password = ''
 
         // trigger warning sweetalert
-        Toast.fire({ icon: 'warning', title: '請確認您輸入了正確的帳號密碼!' })
+        Toast.fire({ icon: 'warning', titleText: '請確認您輸入了正確的帳號密碼!' })
         console.error(error)
       }
 
