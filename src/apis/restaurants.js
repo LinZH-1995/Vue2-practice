@@ -14,5 +14,21 @@ export const restaurantsApi = {
 
   getRestaurantsFeeds() {
     return axiosInstance.get('/restaurants/feeds', { headers })
+  },
+
+  addFavorite(restaurantId) {
+    return axiosInstance.post(`/favorite/${restaurantId}`, null, { headers })
+  },
+
+  deleteFavorite(restaurantId) {
+    return axiosInstance.delete(`/favorite/${restaurantId}`, { headers })
+  },
+
+  addLike(restaurantId) {
+    return axiosInstance.post(`/like/${restaurantId}`, null, { headers })
+  },
+
+  deleteLike(restaurantId) {
+    return axiosInstance.delete(`/like/${restaurantId}`, { headers })
   }
 }
