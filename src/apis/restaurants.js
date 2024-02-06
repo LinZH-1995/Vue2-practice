@@ -30,5 +30,9 @@ export const restaurantsApi = {
 
   deleteLike(restaurantId) {
     return axiosInstance.delete(`/like/${restaurantId}`, { headers })
+  },
+
+  getTopRestaurants() {
+    return axiosInstance.get('/restaurants/top', { headers })
   }
 }

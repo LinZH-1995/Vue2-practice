@@ -24,12 +24,15 @@ export default {
           const response = await usersApi.deleteFollowing(userId)
           if (response.data.status !== 'success') throw new Error(response.data.message)
           this.user.isFollowed = !this.user.isFollowed
+          this.user.FollowerCount -= 1
           return
         }
 
+        // if isFollowed = false , call add
         const response = await usersApi.addFollowing(userId)
         if (response.data.status !== 'success') throw new Error(response.data.message)
         this.user.isFollowed = !this.user.isFollowed
+        this.user.FollowerCount += 1
 
       } catch (error) {
         Toast.fire({ icon: 'error', titleText: '無法加入/刪除追蹤，請稍後再試!' })
