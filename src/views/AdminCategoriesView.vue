@@ -1,35 +1,7 @@
 <script>
 import AdminNavComponent from '../components/AdminNavComponent.vue'
-import { v4 as uuidv4 } from 'uuid'
-
-const dummyData = {
-  categories: [
-    {
-      id: 1,
-      name: '中式料理',
-      createdAt: '2019-06-22T09:00:43.000Z',
-      updatedAt: '2019-06-22T09:00:43.000Z'
-    },
-    {
-      id: 2,
-      name: '日本料理',
-      createdAt: '2019-06-22T09:00:43.000Z',
-      updatedAt: '2019-06-22T09:00:43.000Z'
-    },
-    {
-      id: 3,
-      name: '義大利料理',
-      createdAt: '2019-06-22T09:00:43.000Z',
-      updatedAt: '2019-06-22T09:00:43.000Z'
-    },
-    {
-      id: 4,
-      name: '墨西哥料理',
-      createdAt: '2019-06-22T09:00:43.000Z',
-      updatedAt: '2019-06-22T09:00:43.000Z'
-    }
-  ]
-}
+import { adminApi } from '../apis/admin'
+import { Toast } from '../utils/sweetalert'
 
 export default {
   components: {
@@ -45,32 +17,73 @@ export default {
   },
 
   methods: {
-    fetchCategories() {
-      this.categories = dummyData.categories.map(category => Object.assign(category, { isEditing: false }))
-    },
-    createCategory(name) {
-      console.log('name', name)
+    async fetchCategories() {
+      try {
+        const response = await adminApi.getAdminCategories()
+        this.categories = response.data.categories
 
-      const categoryName = this.newCategoryName.trim()
-      if (categoryName === '') return this.newCategoryName = ''
-      // 將新的類別添加到陣列中
-      this.categories.push({ id: uuidv4(), name: categoryName, isEditing: false })
-      this.newCategoryName = '' // 清空原本欄位中的內容
+      } catch (error) {
+        Toast.fire({ icon: 'error', titleText: '無法取得餐廳類別資料，請稍後再試!' })
+        console.error(error)
+      }
     },
-    deleteCategory(categoryId) {
-      this.categories = this.categories.filter(category => category.id !== categoryId)
+
+    async createCategory() {
+      try {
+        // check whether categoryName is empty
+        const categoryName = this.newCategoryName.trim()
+        if (categoryName === '') {
+          Toast.fire({ icon: 'warning', titleText: '類別名稱不可為空!' })
+          return this.newCategoryName = ''
+        }
+
+        const response = await adminApi.createCategory({ name: categoryName })
+        if (response.data.status === 'error') throw new Error(response.data.message)
+
+        this.categories.push({ id: response.data.categoryId, name: categoryName, isEditing: false }) // 將新的類別添加到陣列中
+        this.newCategoryName = '' // 清空原本欄位中的內容
+
+      } catch (error) {
+        Toast.fire({ icon: 'error', titleText: '無法取得餐廳類別資料，請稍後再試!' })
+        console.error(error)
+      }
     },
+
+    async deleteCategory(categoryId) {
+      try {
+        const response = await adminApi.deleteCategory(categoryId)
+        if (response.data.status !== 'success') throw new Error(response.data.message)
+        this.categories = this.categories.filter(category => category.id !== categoryId)
+
+      } catch (error) {
+        Toast.fire({ icon: 'error', titleText: '無法刪除餐廳類別資料，請稍後再試!' })
+        console.error(error)
+      }
+    },
+
     startEdit(category) {
       this.editCategory = { ...category }
     },
-    updateCategory(editCategory) {
-      const name = editCategory.name.trim()
-      if (name === '') return this.handleCancel()
 
-      const category = this.categories.find(category => category.id === editCategory.id)
-      category.name = name
-      this.editCategory = {}
+    async updateCategory(editCategory) {
+      try {
+        // if name is empty cancel edit
+        const name = editCategory.name.trim()
+        if (name === '') return this.handleCancel()
+
+        const response = await adminApi.editCategory(editCategory.id, { name })
+        if (response.data.status !== 'success') throw new Error(response.data.message)
+        
+        const category = this.categories.find(category => category.id === response.data.categoryId)
+        category.name = name
+        this.handleCancel()
+
+      } catch (error) {
+        Toast.fire({ icon: 'error', titleText: '無法更新餐廳類別資料，請稍後再試!' })
+        console.error(error)
+      }
     },
+
     handleCancel() {
       this.editCategory = {}
     }

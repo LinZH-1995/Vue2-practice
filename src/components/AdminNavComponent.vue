@@ -1,6 +1,3 @@
-<script>
-</script>
-
 <template>
   <div class="mb-3">
     <h1>餐廳後台</h1>
