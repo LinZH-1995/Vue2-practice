@@ -5,22 +5,23 @@ const getToken = () => crypto.decrypted() // get token from localStorage and dec
 const headers = { 'Authorization': `Bearer ${getToken()}` }
 
 export const usersApi = {
-  signIn ({ email, password }) {
-    return axiosInstance.post('/signin', {
-      email,
-      password
-    })
+  signIn({ email, password }) {
+    return axiosInstance.post('/signin', { email, password })
   },
 
-  getTopUsers () {
+  signUp(data) {
+    return axiosInstance.post('/signup', data)
+  },
+
+  getTopUsers() {
     return axiosInstance.get('/users/top', { headers })
   },
 
-  addFollowing (userId) {
+  addFollowing(userId) {
     return axiosInstance.post(`/following/${userId}`, null, { headers })
   },
 
-  deleteFollowing (userId) {
+  deleteFollowing(userId) {
     return axiosInstance.delete(`/following/${userId}`, { headers })
   }
 }

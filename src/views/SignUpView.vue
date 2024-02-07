@@ -1,4 +1,7 @@
 <script>
+import { usersApi } from '../apis/users'
+import { Toast } from '../utils/sweetalert'
+
 export default {
   data: function () {
     return {
@@ -9,16 +12,34 @@ export default {
     }
   },
   methods: {
-    handleSubmit() {
-      const data = JSON.stringify({
-        name: this.name,
-        email: this.email,
-        password: this.password,
-        passwordCheck: this.passwordCheck
-      })
+    async handleSubmit() {
+      try {
+        // check if required field is empty
+        const name = this.name.trim()
+        const email = this.email.trim()
+        const password = this.password.trim()
+        const passwordCheck = this.passwordCheck.trim()
+        if (name === '' || email === '' || password === '' || passwordCheck === '') {
+          return Toast.fire({ icon: 'warning', titleText: '所有欄位皆不可為空!' })
+        }
 
-      // TODO: 向後端驗證使用者登入資訊是否合法
-      console.log('data', data)
+        // check password and passwordCheck
+        if (password !== passwordCheck) {
+          this.password = ''
+          this.passwordCheck = ''
+          return Toast.fire({ icon: 'warning', titleText: '密碼與確認密碼不同!' })
+        }
+
+        const data = { name, email, password, passwordCheck }
+        const response = await usersApi.signUp(data)
+        if (response.data.status === 'error') throw new Error(response.data.message)
+
+        this.$router.push('/signin')  //  redirect to path, equal <router-link :to="...">
+
+      } catch (error) {
+        Toast.fire({ icon: 'error', titleText: '無法註冊帳號，請稍後再試!' })
+        console.error(error)
+      }
     }
   }
 }
@@ -33,28 +54,30 @@ export default {
         </h1>
       </div>
 
+      <div class="form-label-group mb-3">* 為必填欄位</div>
+
       <div class="form-label-group mb-3">
-        <label for="name" class="mb-2">Name</label>
-        <input v-model="name" id="name" name="name" type="text" class="form-control" placeholder="name" autocomplete="username" required
-          autofocus>
+        <label for="name" class="mb-2">* Name</label>
+        <input v-model="name" id="name" name="name" type="text" class="form-control" placeholder="name"
+          autocomplete="username" required autofocus>
       </div>
 
       <div class="form-label-group mb-3">
-        <label for="email" class="mb-2">Email</label>
-        <input v-model="email" id="email" name="email" type="email" class="form-control" placeholder="email" autocomplete="email"
-          required>
+        <label for="email" class="mb-2">* Email</label>
+        <input v-model="email" id="email" name="email" type="email" class="form-control" placeholder="email"
+          autocomplete="email" required>
       </div>
 
       <div class="form-label-group mb-3">
-        <label for="password" class="mb-2">Password</label>
-        <input v-model="password" id="password" name="password" type="password" class="form-control" placeholder="Password"
-          autocomplete="new-password" required>
+        <label for="password" class="mb-2">* Password</label>
+        <input v-model="password" id="password" name="password" type="password" class="form-control"
+          placeholder="Password" autocomplete="new-password" required>
       </div>
 
       <div class="form-label-group mb-3">
-        <label for="password-check" class="mb-2">Password Check</label>
-        <input v-model="passwordCheck" id="password-check" name="passwordCheck" type="password" class="form-control" placeholder="Password Check"
-          autocomplete="new-password" required>
+        <label for="password-check" class="mb-2">* Password Check</label>
+        <input v-model="passwordCheck" id="password-check" name="passwordCheck" type="password" class="form-control"
+          placeholder="Password Check" autocomplete="new-password" required>
       </div>
 
       <div class="d-grid gap-3">
