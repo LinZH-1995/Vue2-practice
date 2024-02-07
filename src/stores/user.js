@@ -1,4 +1,6 @@
 import { defineStore } from 'pinia'
+import { usersApi } from '../apis/users'
+import { Toast } from '../utils/sweetalert'
 
 export const useUserStore = defineStore('user', {
   // similar with Vue data
@@ -23,6 +25,17 @@ export const useUserStore = defineStore('user', {
 
       // 將使用者的登入狀態改為 true
       this.isAuthenticated = true
+    },
+
+    async fetchCurrentUser() {
+      try {
+        const response = await usersApi.getCurrentUser()
+        this.setCurrentUser(response.data)
+
+      } catch (error) {
+        Toast.fire({ icon: 'error', titleText: 'can not fetch user information' })
+        console.error(error)
+      }
     }
   }
 })

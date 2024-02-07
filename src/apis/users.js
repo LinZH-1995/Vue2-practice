@@ -12,6 +12,12 @@ export const usersApi = {
     return axiosInstance.post('/signup', data)
   },
 
+  getCurrentUser() {
+    return axiosInstance.get('/get_current_user', {
+      headers: { 'Authorization': `Bearer ${getToken()}` }
+    })
+  },
+
   getTopUsers() {
     return axiosInstance.get('/users/top', {
       headers: { 'Authorization': `Bearer ${getToken()}` }

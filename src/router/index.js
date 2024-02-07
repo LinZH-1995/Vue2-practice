@@ -3,6 +3,8 @@ import VueRouter from 'vue-router'
 import NotFoundView from '../views/NotFoundView.vue'
 import SignInView from '../views/SignInView.vue'
 import RestaurantsView from '../views/RestaurantsView.vue'
+import { pinia } from '../main'
+import { useUserStore } from '../stores/user'
 
 Vue.use(VueRouter)
 
@@ -107,6 +109,16 @@ const router = new VueRouter({
       component: NotFoundView
     }
   ]
+})
+
+router.beforeEach(async (_to, _from, next) => {
+  try {
+    const userStore = useUserStore(pinia)
+    await userStore.fetchCurrentUser()
+    next()
+  } catch (error) {
+    console.error(error)
+  }
 })
 
 export default router
