@@ -2,8 +2,14 @@
 import { usersApi } from '../apis/users'
 import { Toast } from '../utils/sweetalert'
 import { crypto } from '../utils/crypto'
+import { useUserStore } from '../stores/user'
 
 export default {
+  setup() {
+    const userStore = useUserStore()
+    return { userStore }
+  },
+
   data: function () {
     return {
       email: '',
@@ -32,6 +38,7 @@ export default {
         const encryptedToken = crypto.encrypted(token)
         localStorage.setItem('token', encryptedToken)
 
+        this.userStore.setCurrentUser(response.data.user)
         this.$router.push('/restaurants') // equal <router-link :to="...URL...">
 
         Toast.fire({ icon: 'success', titleText: '成功登入!' }) // trigger success sweetalert
