@@ -1,87 +1,51 @@
 <script>
 import AdminNavComponent from '../components/AdminNavComponent.vue'
-
-const dummyData = {
-  "users": [
-    {
-      "id": 1,
-      "name": "root",
-      "email": "root@example.com",
-      "password": "$2a$10$imeDGioZkuOzi7fV/g3I.ekVZS.SecTN2yp93Gx5q0qGuSYd3GIu2",
-      "isAdmin": true,
-      "image": null,
-      "createdAt": "2024-01-31T07:20:03.000Z",
-      "updatedAt": "2024-01-31T07:20:03.000Z",
-      "Followers": [],
-      "FollowerCount": 0,
-      "isFollowed": false
-    },
-    {
-      "id": 2,
-      "name": "user1",
-      "email": "user1@example.com",
-      "password": "$2a$10$RRHRcZKVXOkLHyavs3OZ3uGOMKh3F0TmjiOZ82keF9LlgI/CDcHsy",
-      "isAdmin": false,
-      "image": null,
-      "createdAt": "2024-01-31T07:20:03.000Z",
-      "updatedAt": "2024-01-31T07:20:03.000Z",
-      "Followers": [],
-      "FollowerCount": 0,
-      "isFollowed": false
-    },
-    {
-      "id": 3,
-      "name": "user2",
-      "email": "user2@example.com",
-      "password": "$2a$10$jFzslGypP3tvjKg0iYfVYe/MHKTb.JjUqmVS3jXFZRC.LOm9nuFBW",
-      "isAdmin": false,
-      "image": null,
-      "createdAt": "2024-01-31T07:20:03.000Z",
-      "updatedAt": "2024-01-31T07:20:03.000Z",
-      "Followers": [],
-      "FollowerCount": 0,
-      "isFollowed": false
-    }
-  ]
-}
-
-const dummyUser = {
-  "profile": {
-    "id": 1,
-    "name": "root",
-    "email": "root@example.com",
-    "password": "$2a$10$imeDGioZkuOzi7fV/g3I.ekVZS.SecTN2yp93Gx5q0qGuSYd3GIu2",
-    "isAdmin": true,
-    "image": null,
-    "createdAt": "2024-01-31T07:20:03.000Z",
-    "updatedAt": "2024-01-31T07:20:03.000Z",
-    "Comments": [],
-    "FavoritedRestaurants": [],
-    "Followers": [],
-    "Followings": []
-  },
-  "isFollowed": false
-}
+import { adminApi } from '../apis/admin'
+import { Toast } from '../utils/sweetalert'
+import { useUserStore } from '../stores/user'
 
 export default {
   components: {
     AdminNavComponent
   },
 
+  setup() {
+    const userStore = useUserStore()
+    return { userStore }
+  },
+
   data: function () {
     return {
-      users: [],
-      currentUser: dummyUser.profile
+      users: []
     }
   },
 
   methods: {
-    fetchUsers() {
-      this.users = dummyData.users
+    async fetchUsers() {
+      try {
+        const response = await adminApi.getUsers()
+        this.users = response.data.users
+
+      } catch (error) {
+        Toast.fire({ icon: 'error', titleText: '無法取得使用者資料，請稍後再試!' })
+        console.error(error)
+      }
     },
-    toggleUserRole(userId) {
-      const user = this.users.find(user => user.id === userId)
-      user.isAdmin = !user.isAdmin
+
+    async toggleUserRole(userId) {
+      try {
+        const user = this.users.find(user => user.id === userId)
+        const response = await adminApi.toggleUserRole(userId, user.isAdmin)
+        if (response.data.status !== 'success') {
+          return Toast.fire({ icon: 'error', titleText: response.data.message || 'something wrong' })
+        }
+
+        user.isAdmin = !user.isAdmin
+
+      } catch (error) {
+        Toast.fire({ icon: 'error', titleText: '無法更改使用者權限，請稍後再試!' })
+        console.error(error)
+      }
     }
   },
 
@@ -115,11 +79,11 @@ export default {
           </td>
 
           <td>
-            <button v-show="user.isAdmin && currentUser.id === user.id" class="btn btn-link" disabled>root
+            <button v-show="user.isAdmin && userStore.currentUser.id === user.id" class="btn btn-link" disabled>root
               user</button>
-            <button v-show="user.isAdmin && currentUser.id !== user.id" @click.stop.prevent="toggleUserRole(user.id)"
+            <button v-show="user.isAdmin && userStore.currentUser.id !== user.id" @click.stop.prevent="toggleUserRole(user.id)"
               type="button" class="btn btn-link">set as user</button>
-            <button v-show="!user.isAdmin && currentUser.id !== user.id" @click.stop.prevent="toggleUserRole(user.id)"
+            <button v-show="!user.isAdmin && userStore.currentUser.id !== user.id" @click.stop.prevent="toggleUserRole(user.id)"
               type="button" class="btn btn-link">set as admin</button>
           </td>
         </tr>

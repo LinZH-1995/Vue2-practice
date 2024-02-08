@@ -56,5 +56,17 @@ export const adminApi = {
     return axiosInstance.put(`/admin/restaurants/${restaurantId}`, formData, {
       headers: { 'Authorization': `Bearer ${getToken()}` }
     })
+  },
+
+  getUsers() {
+    return axiosInstance.get('/admin/users', {
+      headers: { 'Authorization': `Bearer ${getToken()}` }
+    })
+  },
+
+  toggleUserRole(userId, isAdmin) {
+    return axiosInstance.put(`/admin/users/${userId}`, { isAdmin }, {
+      headers: { 'Authorization': `Bearer ${getToken()}` }
+    })
   }
 }
