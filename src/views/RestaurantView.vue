@@ -2,88 +2,9 @@
 import RestaurantDetailComponent from '../components/RestaurantDetailComponent.vue'
 import RestaurantCommentsComponent from '../components/RestaurantCommentsComponent.vue'
 import CreateCommentComponent from '../components/CreateCommentComponent.vue'
-
-const dummyData = {
-  "restaurant": {
-    "id": 1,
-    "name": "Isobel Weimann",
-    "tel": "488.464.1578 x94525",
-    "address": "1697 Mitchell Avenue",
-    "opening_hours": "08:00",
-    "description": "dolorem odit velit",
-    "image": "https://loremflickr.com/320/240/restaurant,food/?random=20.919451761011775",
-    "viewCounts": 1,
-    "createdAt": "2024-01-31T07:20:03.000Z",
-    "updatedAt": "2024-02-02T02:57:55.658Z",
-    "CategoryId": 4,
-    "Category": {
-      "id": 4,
-      "name": "墨西哥料理",
-      "createdAt": "2024-01-31T07:20:03.000Z",
-      "updatedAt": "2024-01-31T07:20:03.000Z"
-    },
-    "FavoritedUsers": [],
-    "LikedUsers": [],
-    "Comments": [
-      {
-        "id": 101,
-        "text": "Rerum delectus est nihil quasi non officia voluptas.",
-        "UserId": 1,
-        "RestaurantId": 1,
-        "createdAt": "2024-01-31T07:20:03.000Z",
-        "updatedAt": "2024-01-31T07:20:03.000Z",
-        "User": {
-          "id": 1,
-          "name": "root",
-          "email": "root@example.com",
-          "password": "$2a$10$imeDGioZkuOzi7fV/g3I.ekVZS.SecTN2yp93Gx5q0qGuSYd3GIu2",
-          "isAdmin": true,
-          "image": null,
-          "createdAt": "2024-01-31T07:20:03.000Z",
-          "updatedAt": "2024-01-31T07:20:03.000Z"
-        }
-      },
-      {
-        "id": 51,
-        "text": "Facere aliquid quis molestiae nobis enim possimus velit perferendis.",
-        "UserId": 3,
-        "RestaurantId": 1,
-        "createdAt": "2024-01-31T07:20:03.000Z",
-        "updatedAt": "2024-01-31T07:20:03.000Z",
-        "User": {
-          "id": 3,
-          "name": "user2",
-          "email": "user2@example.com",
-          "password": "$2a$10$jFzslGypP3tvjKg0iYfVYe/MHKTb.JjUqmVS3jXFZRC.LOm9nuFBW",
-          "isAdmin": false,
-          "image": null,
-          "createdAt": "2024-01-31T07:20:03.000Z",
-          "updatedAt": "2024-01-31T07:20:03.000Z"
-        }
-      },
-      {
-        "id": 1,
-        "text": "Vel saepe minima.",
-        "UserId": 1,
-        "RestaurantId": 1,
-        "createdAt": "2024-01-31T07:20:03.000Z",
-        "updatedAt": "2024-01-31T07:20:03.000Z",
-        "User": {
-          "id": 1,
-          "name": "root",
-          "email": "root@example.com",
-          "password": "$2a$10$imeDGioZkuOzi7fV/g3I.ekVZS.SecTN2yp93Gx5q0qGuSYd3GIu2",
-          "isAdmin": true,
-          "image": null,
-          "createdAt": "2024-01-31T07:20:03.000Z",
-          "updatedAt": "2024-01-31T07:20:03.000Z"
-        }
-      }
-    ]
-  },
-  "isFavorited": false,
-  "isLiked": false
-}
+import { restaurantsApi } from '../apis/restaurants'
+import { Toast } from '../utils/sweetalert'
+import { useUserStore } from '../stores/user'
 
 const dummyUser = {
   "id": 1,
@@ -100,49 +21,35 @@ export default {
     CreateCommentComponent
   },
 
-  data: function() {
+  data: function () {
     return {
-      restaurant: {
-        id: -1,
-        name: '',
-        categoryName: '',
-        image: '',
-        openingHours: '',
-        tel: '',
-        address: '',
-        description: '',
-        isFavorited: false,
-        isLiked: false
-      },
-      restaurantComments: [],
+      restaurant: {},
       currentUser: dummyUser
     }
   },
 
   methods: {
-    fetchRestaurant(restaurantId) {
-      console.log('fetchRestaurant id: ', restaurantId)
+    async fetchRestaurant(restaurantId) {
+      try {
+        const response = await restaurantsApi.getRestaurant(restaurantId)
+        this.restaurant = {
+          ...response.data.restaurant,
+          isFavorited: response.data.isFavorited,
+          isLiked: response.data.isLiked
+        }
 
-      this.restaurant = {
-        id: dummyData.restaurant.id,
-        name: dummyData.restaurant.name,
-        categoryName: dummyData.restaurant.Category.name,
-        image: dummyData.restaurant.image,
-        openingHours: dummyData.restaurant.opening_hours,
-        tel: dummyData.restaurant.tel,
-        address: dummyData.restaurant.address,
-        description: dummyData.restaurant.description,
-        isFavorited: dummyData.isFavorited,
-        isLiked: dummyData.isLiked,
+      } catch (error) {
+        Toast.fire({ icon: 'error', title: '無法取得餐廳資料，請稍後再試' })
+        console.error(error)
       }
-
-      this.restaurantComments = dummyData.restaurant.Comments
     },
+
     afterDeleteComment(commentId) {
       this.restaurantComments = this.restaurantComments.filter(
         comment => comment.id !== commentId
       )
     },
+
     afterCreateComment(payload) {
       const { commentId, restaurantId, text } = payload
       this.restaurantComments.push({
@@ -168,9 +75,9 @@ export default {
 <template>
   <div class="container py-5">
     <h1 class="mb-3">餐廳描述頁</h1>
-    <RestaurantDetailComponent :initial-restaurant="restaurant"/>
+    <RestaurantDetailComponent :initial-restaurant="restaurant" />
     <hr>
-    <RestaurantCommentsComponent :restaurant-comments="restaurantComments" @after-delete-comment="afterDeleteComment"/>
-    <CreateCommentComponent :restaurant-id="restaurant.id" @after-create-comment="afterCreateComment"/>
+    <RestaurantCommentsComponent :restaurant-comments="restaurant.Comments" @after-delete-comment="afterDeleteComment" />
+    <CreateCommentComponent :restaurant-id="restaurant.id" @after-create-comment="afterCreateComment" />
   </div>
 </template>

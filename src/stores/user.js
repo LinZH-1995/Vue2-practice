@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import { usersApi } from '../apis/users'
-import { Toast } from '../utils/sweetalert'
 
 export const useUserStore = defineStore('user', {
   // similar with Vue data
@@ -33,8 +32,7 @@ export const useUserStore = defineStore('user', {
         this.setCurrentUser(response.data)
 
       } catch (error) {
-        Toast.fire({ icon: 'error', titleText: 'can not fetch user information' })
-        console.error(error)
+        console.log('fetch user error')
       }
     }
   }

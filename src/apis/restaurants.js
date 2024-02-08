@@ -11,6 +11,12 @@ export const restaurantsApi = {
     })
   },
 
+  getRestaurant (restaurantId) {
+    return axiosInstance.get(`/restaurants/${restaurantId}`, {
+      headers: { 'Authorization': `Bearer ${getToken()}` }
+    })
+  },
+
   getRestaurantsFeeds() {
     return axiosInstance.get('/restaurants/feeds', {
       headers: { 'Authorization': `Bearer ${getToken()}` }
