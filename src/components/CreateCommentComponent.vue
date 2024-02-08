@@ -1,5 +1,6 @@
 <script>
-import { v4 as uuidv4 } from 'uuid'
+import { commentsApi } from '../apis/comments'
+import { Toast } from '../utils/sweetalert'
 
 export default {
   props: {
@@ -16,15 +17,29 @@ export default {
   },
 
   methods: {
-    handleSubmit() {
-      // TODO: 向 API 發送 POST 請求
-      // 伺服器新增 Comment 成功後...
-      this.$emit('after-create-comment', {
-        commentId: uuidv4(),
-        restaurantId: this.restaurantId,
-        text: this.text.trim()
-      })
-      this.text = '' // 將表單內的資料清空
+    async handleSubmit() {
+      try {
+        // check whether text is empty
+        const restaurantId = this.restaurantId
+        const text = this.text.trim()
+        if (text === '') return Toast.fire({ icon: 'warning', titleText: '評論不可為空!' })
+
+        const response = await commentsApi.createComment(restaurantId, text)
+        if (response.data.status !== 'success') throw new Error(response.data.message)
+
+        // if create comment success , tell parent component refresh data
+        this.$emit('after-create-comment', {
+          commentId: response.data.commentId,
+          restaurantId,
+          text
+        })
+
+        this.text = '' // 將表單內的資料清空
+
+      } catch (error) {
+        Toast.fire({ icon: 'error', titleText: '無法新增評論，請稍後再試!' })
+        console.error(error)
+      }
     }
   }
 }
@@ -38,9 +53,7 @@ export default {
     </div>
     <div class="d-flex align-items-center justify-content-between">
       <button type="button" class="btn btn-link" @click="$router.back()">回上一頁</button>
-      <button type="submit" class="btn btn-primary mr-0">
-        Submit
-      </button>
+      <button type="submit" class="btn btn-primary mr-0">Submit</button>
     </div>
   </form>
 </template>

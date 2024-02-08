@@ -6,14 +6,6 @@ import { restaurantsApi } from '../apis/restaurants'
 import { Toast } from '../utils/sweetalert'
 import { useUserStore } from '../stores/user'
 
-const dummyUser = {
-  "id": 1,
-  "name": "root",
-  "email": "root@example.com",
-  "image": null,
-  "isAdmin": true
-}
-
 export default {
   components: {
     RestaurantDetailComponent,
@@ -21,10 +13,14 @@ export default {
     CreateCommentComponent
   },
 
+  setup() {
+    const userStore = useUserStore()
+    return { userStore }
+  },
+
   data: function () {
     return {
-      restaurant: {},
-      currentUser: dummyUser
+      restaurant: {}
     }
   },
 
@@ -52,15 +48,16 @@ export default {
 
     afterCreateComment(payload) {
       const { commentId, restaurantId, text } = payload
-      this.restaurantComments.push({
+
+      // refresh new data 
+      this.restaurant.Comments.push({
         id: commentId,
         text,
         RestaurantId: restaurantId,
-        User: {
-          id: this.currentUser.id,
-          name: this.currentUser.name
-        },
-        createdAt: new Date()
+        UserId: this.userStore.currentUser.id,
+        User: this.userStore.currentUser,
+        createdAt: new Date(),
+        updatedAt: new Date()
       })
     }
   },
@@ -68,6 +65,12 @@ export default {
   created() {
     const { id: restaurantId } = this.$route.params
     this.fetchRestaurant(restaurantId)
+  },
+
+  beforeRouteUpdate(to, _from, next) {
+    const restaurantId = to.params.id
+    this.fetchRestaurant(restaurantId)
+    next()
   }
 }
 </script>
