@@ -51,8 +51,8 @@ export default {
   <div class="card mb-3" style="max-width: 540px;margin: auto;">
     <div class="row g-0">
       <div class="col-md-4">
-        <router-link :to="{ name: 'restaurant', params: { id: restaurant.id } }">
-          <img class="card-img" :src="restaurant.image">
+        <router-link :to="{ name: 'restaurant', params: { id: restaurant.id } }" class="">
+          <img class="card-img h-100 w-100" :src="restaurant.image">
         </router-link>
       </div>
       <div class="col-md-8">

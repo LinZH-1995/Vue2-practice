@@ -10,7 +10,7 @@ export default {
     }
   },
 
-  data: function() {
+  data: function () {
     return {
       text: ''
     }
@@ -59,3 +59,9 @@ export default {
     </div>
   </form>
 </template>
+
+<style scoped>
+.form-group {
+  margin: 21px 0 8px;
+}
+</style>

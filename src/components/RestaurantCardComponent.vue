@@ -73,7 +73,7 @@ export default {
   <div class="col-md-6 col-lg-4">
     <div class="card mb-4">
       <img class="card-img-top" :src="restaurant.image" alt="Card image cap" width="286px" height="180px">
-      <div class="card-body">
+      <div class="card-body" style="min-height: 115px;">
         <p class="card-text title-wrap">
           <router-link :to="{ name: 'restaurant', params: { id: restaurant.id } }">{{ restaurant.name }}</router-link>
         </p>
@@ -107,3 +107,36 @@ export default {
     </div>
   </div>
 </template>
+
+<style scoped>
+.badge.badge-secondary {
+  padding: 0;
+  margin: 8px 0;
+  color: #bd2333;
+  background-color: transparent;
+}
+
+.btn,
+.btn-border.btn:hover {
+  margin: 7px 14px 7px 0;
+}
+
+.card {
+  margin-bottom: 2rem !important;
+}
+
+.card-img-top {
+  background-color: #EFEFEF;
+  min-height: 250px;
+}
+
+.card-body {
+  padding: 17.5px;
+}
+
+.card-footer {
+  padding: 9px 17.5px;
+  border-color: rgb(232, 232, 232);
+  background: white;
+}
+</style>

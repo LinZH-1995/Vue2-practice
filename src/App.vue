@@ -8,7 +8,13 @@ import NavbarComponent from './components/NavbarComponent.vue'
   <div id="restaurant-forum">
     <NavbarComponent />
     <main role="main" class="mt-5 bg-white">
-    <router-view />
+      <router-view />
     </main>
   </div>
 </template>
+
+<style scoped>
+main {
+  margin-top: 65px !important;
+}
+</style>
