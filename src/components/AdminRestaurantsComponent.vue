@@ -27,7 +27,9 @@ export default {
         this.toggleIsProcessing() // isProcessing = true
 
         const response = await adminApi.deleteRestaurant(restaurantId)
-        if (response.data.status !== 'success') throw new Error(response.data.message)
+        if (response.data.status !== 'success') {
+          return Toast.fire({ icon: 'error', titleText: response.data.message || 'something wrong' })
+        }
         this.restaurants = this.restaurants.filter(restaurant => restaurant.id !== restaurantId)
 
         this.toggleIsProcessing() // isProcessing = false

@@ -32,7 +32,9 @@ export default {
 
         const data = { name, email, password, passwordCheck }
         const response = await usersApi.signUp(data)
-        if (response.data.status === 'error') throw new Error(response.data.message)
+        if (response.data.status !== 'success') {
+          return Toast.fire({ icon: 'error', titleText: response.data.message || 'something wrong' })
+        }
 
         this.$router.push('/signin')  //  redirect to path, equal <router-link :to="...">
 

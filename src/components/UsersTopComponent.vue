@@ -28,7 +28,9 @@ export default {
         // if isFollowed = true , call detele
         if (this.user.isFollowed) {
           const response = await usersApi.deleteFollowing(userId)
-          if (response.data.status !== 'success') throw new Error(response.data.message)
+          if (response.data.status !== 'success') {
+            return Toast.fire({ icon: 'error', titleText: response.data.message || 'something wrong' })
+          }
           this.user.isFollowed = !this.user.isFollowed
           this.user.FollowerCount -= 1
           return
@@ -36,7 +38,9 @@ export default {
 
         // if isFollowed = false , call add
         const response = await usersApi.addFollowing(userId)
-        if (response.data.status !== 'success') throw new Error(response.data.message)
+        if (response.data.status !== 'success') {
+          return Toast.fire({ icon: 'error', titleText: response.data.message || 'something wrong' })
+        }
         this.user.isFollowed = !this.user.isFollowed
         this.user.FollowerCount += 1
 

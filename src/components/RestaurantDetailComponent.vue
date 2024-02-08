@@ -22,14 +22,18 @@ export default {
         // if isFavorited = true , call detele
         if (this.restaurant.isFavorited) {
           const response = await restaurantsApi.deleteFavorite(restaurantId)
-          if (response.data.status !== 'success') throw new Error(response.data.message)
+          if (response.data.status !== 'success') {
+          return Toast.fire({ icon: 'error', titleText: response.data.message || 'something wrong' })
+        }
           this.restaurant.isFavorited = !this.restaurant.isFavorited
           return
         }
 
         // if isFavorited = false , call add
         const response = await restaurantsApi.addFavorite(restaurantId)
-        if (response.data.status !== 'success') throw new Error(response.data.message)
+        if (response.data.status !== 'success') {
+          return Toast.fire({ icon: 'error', titleText: response.data.message || 'something wrong' })
+        }
         this.restaurant.isFavorited = !this.restaurant.isFavorited
 
       } catch (error) {
@@ -43,14 +47,18 @@ export default {
         // if isFavorited = true , call detele
         if (this.restaurant.isLiked) {
           const response = await restaurantsApi.deleteLike(restaurantId)
-          if (response.data.status !== 'success') throw new Error(response.data.message)
+          if (response.data.status !== 'success') {
+          return Toast.fire({ icon: 'error', titleText: response.data.message || 'something wrong' })
+        }
           this.restaurant.isLiked = !this.restaurant.isLiked
           return
         }
 
         // if isFavorited = false , call add
         const response = await restaurantsApi.addLike(restaurantId)
-        if (response.data.status !== 'success') throw new Error(response.data.message)
+        if (response.data.status !== 'success') {
+          return Toast.fire({ icon: 'error', titleText: response.data.message || 'something wrong' })
+        }
         this.restaurant.isLiked = !this.restaurant.isLiked
 
       } catch (error) {

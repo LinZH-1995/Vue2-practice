@@ -22,14 +22,18 @@ export default {
         // if isFavorited = true , call detele
         if (this.restaurant.isFavorited) {
           const response = await restaurantsApi.deleteFavorite(restaurantId)
-          if (response.data.status !== 'success') throw new Error(response.data.message)
+          if (response.data.status !== 'success') {
+            return Toast.fire({ icon: 'error', titleText: response.data.message || 'something wrong' })
+          }
           this.restaurant.isFavorited = !this.restaurant.isFavorited
           return
         }
 
         // if isFavorited = false , call add
         const response = await restaurantsApi.addFavorite(restaurantId)
-        if (response.data.status !== 'success') throw new Error(response.data.message)
+        if (response.data.status !== 'success') {
+          return Toast.fire({ icon: 'error', titleText: response.data.message || 'something wrong' })
+        }
         this.restaurant.isFavorited = !this.restaurant.isFavorited
 
       } catch (error) {
@@ -42,16 +46,20 @@ export default {
         // if isLiked = true , call detele
         if (this.restaurant.isLiked) {
           const response = await restaurantsApi.deleteLike(restaurantId)
-          if (response.data.status !== 'success') throw new Error(response.data.message)
+          if (response.data.status !== 'success') {
+            return Toast.fire({ icon: 'error', titleText: response.data.message || 'something wrong' })
+          }
           this.restaurant.isLiked = !this.restaurant.isLiked
           return
         }
 
         // if isLiked = false , call add
         const response = await restaurantsApi.addLike(restaurantId)
-        if (response.data.status !== 'success') throw new Error(response.data.message)
+        if (response.data.status !== 'success') {
+          return Toast.fire({ icon: 'error', titleText: response.data.message || 'something wrong' })
+        }
         this.restaurant.isLiked = !this.restaurant.isLiked
-        
+
       } catch (error) {
         Toast.fire({ icon: 'error', titleText: '無法將餐廳加入/刪除喜歡，請稍後再試!' })
         console.error(error)
@@ -90,7 +98,8 @@ export default {
             @click.stop.prevent="toggleLike(restaurant.id)">
             Unlike
           </button>
-          <button type="button" class="btn btn-primary like me-2 my-2" v-else @click.stop.prevent="toggleLike(restaurant.id)">
+          <button type="button" class="btn btn-primary like me-2 my-2" v-else
+            @click.stop.prevent="toggleLike(restaurant.id)">
             Like
           </button>
         </template>

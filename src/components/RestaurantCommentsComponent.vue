@@ -23,7 +23,9 @@ export default {
     async handleDeleteButtonClick(commentId) {
       try {
         const response = await commentsApi.deleteComment(commentId)
-        if (response.data.status !== 'success') throw new Error(response.data.message)
+        if (response.data.status !== 'success') {
+          return Toast.fire({ icon: 'error', titleText: response.data.message || 'something wrong' })
+        }
 
         // if delete comment success , tell parent component refresh data
         this.$emit('after-delete-comment', commentId)

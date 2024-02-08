@@ -26,7 +26,10 @@ export default {
         }
 
         const response = await adminApi.editRestaurant(this.restaurant.id, formData)
-        if (response.data.status !== 'success') throw new Error(response.data.message)
+        if (response.data.status !== 'success') {
+          return Toast.fire({ icon: 'error', titleText: response.data.message || 'something wrong' })
+        }
+        
         this.$router.push('/admin/restaurants') // redirect to path, equal <router-link :to="...">
 
       } catch (error) {

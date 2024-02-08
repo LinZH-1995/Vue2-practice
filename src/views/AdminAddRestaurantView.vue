@@ -25,7 +25,10 @@ export default {
         }
 
         const response = await adminApi.createRestaurant(formData)
-        if (response.data.status !== 'success') throw new Error(response.data.message)
+        if (response.data.status !== 'success') {
+          return Toast.fire({ icon: 'error', titleText: response.data.message || 'something wrong' })
+        }
+
         this.$router.push('/admin/restaurants') // redirect to path, equal <router-link :to="...">
 
       } catch (error) {
@@ -34,7 +37,7 @@ export default {
         console.error(error)
       }
     },
-    
+
     toggleIsProcessing() {
       this.isProcessing = !this.isProcessing
     }

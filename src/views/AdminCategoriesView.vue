@@ -38,7 +38,9 @@ export default {
         }
 
         const response = await adminApi.createCategory({ name: categoryName })
-        if (response.data.status === 'error') throw new Error(response.data.message)
+        if (response.data.status !== 'success') {
+          return Toast.fire({ icon: 'error', titleText: response.data.message || 'something wrong' })
+        }
 
         this.categories.push({ id: response.data.categoryId, name: categoryName, isEditing: false }) // 將新的類別添加到陣列中
         this.newCategoryName = '' // 清空原本欄位中的內容
@@ -52,7 +54,9 @@ export default {
     async deleteCategory(categoryId) {
       try {
         const response = await adminApi.deleteCategory(categoryId)
-        if (response.data.status !== 'success') throw new Error(response.data.message)
+        if (response.data.status !== 'success') {
+          return Toast.fire({ icon: 'error', titleText: response.data.message || 'something wrong' })
+        }
         this.categories = this.categories.filter(category => category.id !== categoryId)
 
       } catch (error) {
@@ -72,8 +76,10 @@ export default {
         if (name === '') return this.handleCancel()
 
         const response = await adminApi.editCategory(editCategory.id, { name })
-        if (response.data.status !== 'success') throw new Error(response.data.message)
-        
+        if (response.data.status !== 'success') {
+          return Toast.fire({ icon: 'error', titleText: response.data.message || 'something wrong' })
+        }
+
         const category = this.categories.find(category => category.id === response.data.categoryId)
         category.name = name
         this.handleCancel()

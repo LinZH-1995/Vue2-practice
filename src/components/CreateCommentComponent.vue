@@ -25,7 +25,9 @@ export default {
         if (text === '') return Toast.fire({ icon: 'warning', titleText: '評論不可為空!' })
 
         const response = await commentsApi.createComment(restaurantId, text)
-        if (response.data.status !== 'success') throw new Error(response.data.message)
+        if (response.data.status !== 'success') {
+          return Toast.fire({ icon: 'error', titleText: response.data.message || 'something wrong' })
+        }
 
         // if create comment success , tell parent component refresh data
         this.$emit('after-create-comment', {
