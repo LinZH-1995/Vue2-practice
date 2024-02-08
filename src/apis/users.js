@@ -1,7 +1,4 @@
 import { axiosInstance } from '../utils/axios'
-import { crypto } from '../utils/crypto'
-
-const getToken = () => crypto.decrypted() // get token from localStorage and decrypt
 
 export const usersApi = {
   signIn({ email, password }) {
@@ -13,38 +10,26 @@ export const usersApi = {
   },
 
   getCurrentUser() {
-    return axiosInstance.get('/get_current_user', {
-      headers: { 'Authorization': `Bearer ${getToken()}` }
-    })
+    return axiosInstance.get('/get_current_user')
   },
 
   getUser(userId) {
-    return axiosInstance.get(`/users/${userId}`, {
-      headers: { 'Authorization': `Bearer ${getToken()}` }
-    })
+    return axiosInstance.get(`/users/${userId}`)
   },
 
   putUser(userId, formData) {
-    return axiosInstance.put(`/users/${userId}`, formData, {
-      headers: { 'Authorization': `Bearer ${getToken()}` }
-    })
+    return axiosInstance.put(`/users/${userId}`, formData)
   },
 
   getTopUsers() {
-    return axiosInstance.get('/users/top', {
-      headers: { 'Authorization': `Bearer ${getToken()}` }
-    })
+    return axiosInstance.get('/users/top')
   },
 
   addFollowing(userId) {
-    return axiosInstance.post(`/following/${userId}`, null, {
-      headers: { 'Authorization': `Bearer ${getToken()}` }
-    })
+    return axiosInstance.post(`/following/${userId}`, null)
   },
 
   deleteFollowing(userId) {
-    return axiosInstance.delete(`/following/${userId}`, {
-      headers: { 'Authorization': `Bearer ${getToken()}` }
-    })
+    return axiosInstance.delete(`/following/${userId}`)
   }
 }

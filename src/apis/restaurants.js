@@ -1,55 +1,37 @@
 import { axiosInstance } from '../utils/axios'
-import { crypto } from '../utils/crypto'
-
-const getToken = () => crypto.decrypted() // get token from localStorage and decrypt
 
 export const restaurantsApi = {
   getRestaurants({ page, categoryId }) {
     return axiosInstance.get('/restaurants', {
       params: { page, categoryId },  // http://localhost:3000/api/restaurants?params1=xxx&params2=xxx
-      headers: { 'Authorization': `Bearer ${getToken()}` }
     })
   },
 
   getRestaurant (restaurantId) {
-    return axiosInstance.get(`/restaurants/${restaurantId}`, {
-      headers: { 'Authorization': `Bearer ${getToken()}` }
-    })
+    return axiosInstance.get(`/restaurants/${restaurantId}`)
   },
 
   getRestaurantsFeeds() {
-    return axiosInstance.get('/restaurants/feeds', {
-      headers: { 'Authorization': `Bearer ${getToken()}` }
-    })
+    return axiosInstance.get('/restaurants/feeds')
   },
 
   addFavorite(restaurantId) {
-    return axiosInstance.post(`/favorite/${restaurantId}`, null, {
-      headers: { 'Authorization': `Bearer ${getToken()}` }
-    })
+    return axiosInstance.post(`/favorite/${restaurantId}`, null)
   },
 
   deleteFavorite(restaurantId) {
-    return axiosInstance.delete(`/favorite/${restaurantId}`, {
-      headers: { 'Authorization': `Bearer ${getToken()}` }
-    })
+    return axiosInstance.delete(`/favorite/${restaurantId}`)
   },
 
   addLike(restaurantId) {
-    return axiosInstance.post(`/like/${restaurantId}`, null, {
-      headers: { 'Authorization': `Bearer ${getToken()}` }
-    })
+    return axiosInstance.post(`/like/${restaurantId}`, null)
   },
 
   deleteLike(restaurantId) {
-    return axiosInstance.delete(`/like/${restaurantId}`, {
-      headers: { 'Authorization': `Bearer ${getToken()}` }
-    })
+    return axiosInstance.delete(`/like/${restaurantId}`)
   },
 
   getTopRestaurants() {
-    return axiosInstance.get('/restaurants/top', {
-      headers: { 'Authorization': `Bearer ${getToken()}` }
-    })
+    return axiosInstance.get('/restaurants/top')
   }
 }
