@@ -24,6 +24,12 @@ export const usersApi = {
     })
   },
 
+  putUser(userId, formData) {
+    return axiosInstance.put(`/users/${userId}`, formData, {
+      headers: { 'Authorization': `Bearer ${getToken()}` }
+    })
+  },
+
   getTopUsers() {
     return axiosInstance.get('/users/top', {
       headers: { 'Authorization': `Bearer ${getToken()}` }

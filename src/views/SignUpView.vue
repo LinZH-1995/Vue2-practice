@@ -8,7 +8,8 @@ export default {
       name: '',
       email: '',
       password: '',
-      passwordCheck: ''
+      passwordCheck: '',
+      isProcessing: false
     }
   },
   methods: {
@@ -30,18 +31,25 @@ export default {
           return Toast.fire({ icon: 'warning', titleText: '密碼與確認密碼不同!' })
         }
 
+        this.toggleIsProcessing() // set isProcessing to true when start
         const data = { name, email, password, passwordCheck }
         const response = await usersApi.signUp(data)
         if (response.data.status !== 'success') {
+          this.toggleIsProcessing() // fail then change isProcessing to false
           return Toast.fire({ icon: 'error', titleText: response.data.message || 'something wrong' })
         }
 
         this.$router.push('/signin')  //  redirect to path, equal <router-link :to="...">
 
       } catch (error) {
+        this.toggleIsProcessing() // fail then change isProcessing to false
         Toast.fire({ icon: 'error', titleText: '無法註冊帳號，請稍後再試!' })
         console.error(error)
       }
+    },
+
+    toggleIsProcessing() {
+      this.isProcessing = !this.isProcessing
     }
   }
 }
@@ -83,7 +91,8 @@ export default {
       </div>
 
       <div class="d-grid gap-3">
-        <button class="btn btn-primary" type="submit">Submit</button>
+        <button type="submit" class="btn btn-primary" v-if="isProcessing" disabled>處理中...</button>
+        <button class="btn btn-primary" type="submit" v-else>Submit</button>
         <router-link to="/signin" class="btn text-primary" role="button">Sign In</router-link>
       </div>
 

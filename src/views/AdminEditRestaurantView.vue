@@ -27,6 +27,7 @@ export default {
 
         const response = await adminApi.editRestaurant(this.restaurant.id, formData)
         if (response.data.status !== 'success') {
+          this.toggleIsProcessing() // fail then change isProcessing to false
           return Toast.fire({ icon: 'error', titleText: response.data.message || 'something wrong' })
         }
         
