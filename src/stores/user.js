@@ -12,7 +12,8 @@ export const useUserStore = defineStore('user', {
         image: '',
         isAdmin: false
       },
-      isAuthenticated: false
+      isAuthenticated: false,
+      token: ''
     }
   },
 
@@ -24,6 +25,8 @@ export const useUserStore = defineStore('user', {
 
       // 將使用者的登入狀態改為 true
       this.isAuthenticated = true
+
+      this.token = localStorage.getItem('token')
     },
 
     async fetchCurrentUser() {
@@ -32,6 +35,7 @@ export const useUserStore = defineStore('user', {
         this.setCurrentUser(response.data)
 
       } catch (error) {
+        this.removeToken() // 一旦驗證失敗，觸發登出，清空state
         console.log('fetch user error')
       }
     },
@@ -39,6 +43,7 @@ export const useUserStore = defineStore('user', {
     removeToken() {
       this.currentUser = {}
       this.isAuthenticated = false
+      this.token = ''
       localStorage.removeItem('token')
     }
   }
