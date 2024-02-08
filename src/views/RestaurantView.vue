@@ -41,7 +41,7 @@ export default {
     },
 
     afterDeleteComment(commentId) {
-      this.restaurantComments = this.restaurantComments.filter(
+      this.restaurant.Comments = this.restaurant.Comments.filter(
         comment => comment.id !== commentId
       )
     },
@@ -50,7 +50,7 @@ export default {
       const { commentId, restaurantId, text } = payload
 
       // refresh new data 
-      this.restaurant.Comments.push({
+      this.restaurant.Comments.unshift({
         id: commentId,
         text,
         RestaurantId: restaurantId,

@@ -1,19 +1,16 @@
 <script>
 import { dateFromNowFilter } from '../utils/mixins'
-
-const dummyUser = {
-  currentUser: {
-    id: 1,
-    name: '管理者',
-    email: 'root@example.com',
-    image: 'https://i.pravatar.cc/300',
-    isAdmin: true
-  },
-  isAuthenticated: true
-}
+import { useUserStore } from '../stores/user'
+import { commentsApi } from '../apis/comments'
+import { Toast } from '../utils/sweetalert'
 
 export default {
   mixins: [dateFromNowFilter],
+
+  setup() {
+    const userStore = useUserStore()
+    return { userStore }
+  },
 
   props: {
     restaurantComments: {
@@ -22,18 +19,19 @@ export default {
     }
   },
 
-  data: function() {
-    return {
-      currentUser: dummyUser.currentUser
-    }
-  },
+  methods: {
+    async handleDeleteButtonClick(commentId) {
+      try {
+        const response = await commentsApi.deleteComment(commentId)
+        if (response.data.status !== 'success') throw new Error(response.data.message)
 
-   methods: {
-    handleDeleteButtonClick(commentId) {
-      console.log('handleDeleteButtonClick', commentId)
-      // TODO: 請求 API 伺服器刪除 id 為 commentId 的評論
-      // 觸發父層事件 - $emit( '事件名稱' , 傳遞的資料 )
-      this.$emit('after-delete-comment', commentId)
+        // if delete comment success , tell parent component refresh data
+        this.$emit('after-delete-comment', commentId)
+
+      } catch (error) {
+        Toast.fire({ icon: 'error', titleText: '無法新增評論，請稍後再試!' })
+        console.error(error)
+      }
     }
   }
 }
@@ -57,7 +55,8 @@ export default {
             <p>{{ comment.text }}</p>
           </div>
           <div>
-            <button type="button" class="btn btn-danger float-right mb-2" v-if="currentUser.isAdmin" @click.stop.prevent="handleDeleteButtonClick(comment.id)" v-o>
+            <button type="button" class="btn btn-danger float-right mb-2" v-if="userStore.currentUser.isAdmin"
+              @click.stop.prevent="handleDeleteButtonClick(comment.id)">
               Delete
             </button>
           </div>

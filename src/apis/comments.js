@@ -8,5 +8,11 @@ export const commentsApi = {
     return axiosInstance.post('/comments', { restaurantId, text }, {
       headers: { 'Authorization': `Bearer ${getToken()}` }
     })
+  },
+
+  deleteComment(commentId) {
+    return axiosInstance.delete(`/comments/${commentId}`, {
+      headers: { 'Authorization': `Bearer ${getToken()}` }
+    })
   }
 }
