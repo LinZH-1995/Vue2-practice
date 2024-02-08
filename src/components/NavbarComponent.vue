@@ -5,6 +5,13 @@ export default {
   setup() {
     const userStore = useUserStore()
     return { userStore }
+  },
+
+  methods: {
+    logout() {
+      this.userStore.removeToken()
+      this.$router.push('/signin')
+    }
   }
 }
 </script>
@@ -24,7 +31,7 @@ export default {
           <router-link :to="{ name: 'user', params: { id: userStore.currentUser.id } }" class="text-white me-3 my-1">
             {{ userStore.currentUser.name || '使用者' }} 您好
           </router-link>
-          <button type="button" class="btn btn-sm btn-outline-success my-2 my-sm-0">
+          <button @click="logout" type="button" class="btn btn-sm btn-outline-success my-2 my-sm-0">
             登出
           </button>
         </template>

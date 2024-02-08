@@ -34,6 +34,12 @@ export const useUserStore = defineStore('user', {
       } catch (error) {
         console.log('fetch user error')
       }
+    },
+
+    removeToken() {
+      this.currentUser = {}
+      this.isAuthenticated = false
+      localStorage.removeItem('token')
     }
   }
 })
