@@ -1,7 +1,10 @@
 <script>
+import { usersApi } from '../apis/users'
+import { Toast } from '../utils/sweetalert'
+
 export default {
   props: {
-    user: {
+    initialUser: {
       type: Object,
       required: true
     },
@@ -15,16 +18,49 @@ export default {
     }
   },
 
-  data: function() {
+  data: function () {
     return {
-      isFollowed: this.initialIsFollowed
+      isFollowed: this.initialIsFollowed,
+      user: this.initialUser
     }
   },
 
   methods: {
-    toggleFollowing(userId) {
-      console.log('userId', userId)
-      this.isFollowed = !this.isFollowed
+    async toggleFollow(userId) {
+      try {
+        // if isFollowed = true , call detele
+        if (this.isFollowed) {
+          const response = await usersApi.deleteFollowing(userId)
+          if (response.data.status !== 'success') {
+            return Toast.fire({ icon: 'error', titleText: response.data.message || 'something wrong' })
+          }
+          this.isFollowed = !this.isFollowed
+          this.user.followersCounts -= 1
+          return
+        }
+
+        // if isFollowed = false , call add
+        const response = await usersApi.addFollowing(userId)
+        if (response.data.status !== 'success') {
+          return Toast.fire({ icon: 'error', titleText: response.data.message || 'something wrong' })
+        }
+        this.isFollowed = !this.isFollowed
+        this.user.followersCounts += 1
+
+      } catch (error) {
+        Toast.fire({ icon: 'error', titleText: '無法加入/刪除追蹤，請稍後再試!' })
+        console.error(error)
+      }
+    }
+  },
+
+  watch: {
+    initialIsFollowed(newData) {
+      this.isFollowed = newData
+    },
+
+    initialUser(newData) {
+      this.user = newData
     }
   }
 }
@@ -58,16 +94,18 @@ export default {
               <strong>{{ user.followersCounts }}</strong> followers (追隨者)
             </li>
           </ul>
+
           <template v-if="isCurrentUser">
             <router-link :to="{ name: 'user-edit', params: { id: user.id } }" class="btn btn-primary">
               Edit
             </router-link>
           </template>
+
           <template v-else>
-            <button v-if="isFollowed" type="button" class="btn btn-danger" @click.stop.prevent="toggleFollowing(user.id)">
+            <button v-if="isFollowed" type="button" class="btn btn-danger" @click.stop.prevent="toggleFollow(user.id)">
               取消追蹤
             </button>
-            <button v-else type="button" class="btn btn-primary" @click.stop.prevent="toggleFollowing(user.id)">
+            <button v-else type="button" class="btn btn-primary" @click.stop.prevent="toggleFollow(user.id)">
               追蹤
             </button>
           </template>

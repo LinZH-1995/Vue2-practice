@@ -18,6 +18,12 @@ export const usersApi = {
     })
   },
 
+  getUser(userId) {
+    return axiosInstance.get(`/users/${userId}`, {
+      headers: { 'Authorization': `Bearer ${getToken()}` }
+    })
+  },
+
   getTopUsers() {
     return axiosInstance.get('/users/top', {
       headers: { 'Authorization': `Bearer ${getToken()}` }
