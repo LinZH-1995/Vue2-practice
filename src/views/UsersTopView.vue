@@ -52,6 +52,7 @@ export default {
       <hr>
       <div class="row text-center">
         <UsersTopComponent v-for="user in users" :key="user.id" :init-user="user" />
+        <h4 v-if="users.length === 0">暫無資料</h4>
       </div>
     </template>
   </div>

@@ -15,6 +15,7 @@ export default {
       <strong>{{ favoritedRestaurants.length }}</strong> 收藏的餐廳
     </div>
     <div class="card-body">
+      <h4 v-if="favoritedRestaurants.length === 0">暫無資料</h4>
       <router-link v-for="restaurant in favoritedRestaurants" :key="restaurant.id"
         :to="{ name: 'restaurant', params: { id: restaurant.id } }">
         <img :src="restaurant.image ?? 'http://via.placeholder.com/300x300?text=No+Image'" width="60" height="60"

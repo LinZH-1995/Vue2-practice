@@ -15,6 +15,7 @@ export default {
       <strong>{{ comments.length }}</strong> 已評論餐廳
     </div>
     <div class="card-body">
+      <h4 v-if="comments.length === 0">暫無資料</h4>
       <router-link v-for="comment in comments" :key="comment.id"
         :to="{ name: 'restaurant', params: { id: comment.RestaurantId } }">
         <img :src="comment.Restaurant.image ?? 'http://via.placeholder.com/300x300?text=No+Image'" width="60" height="60"

@@ -57,6 +57,7 @@ export default {
       所有評論：
     </h2>
 
+    <h4 v-if="restaurantComments.length === 0">暫無資料</h4>
     <div v-for="comment in restaurantComments" :key="comment.id">
       <figure>
         <blockquote class="blockquote d-flex justify-content-between">

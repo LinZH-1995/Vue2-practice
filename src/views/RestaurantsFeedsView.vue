@@ -60,11 +60,13 @@ export default {
         <div class="col-md-6">
           <h3>最新餐廳</h3>
           <NewestRestaurantsComponent :restaurants="restaurants" />
+          <h4 v-if="restaurants.length === 0">暫無資料</h4>
         </div>
 
         <div class="col-md-6">
           <h3>最新評論</h3>
           <NewestCommentsComponent :comments="comments" />
+          <h4 v-if="comments.length === 0">暫無資料</h4>
         </div>
       </div>
     </template>

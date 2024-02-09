@@ -83,6 +83,7 @@ export default {
           </tr>
         </thead>
         <tbody>
+          <h4 v-if="users.length === 0">暫無資料</h4>
           <tr v-for="user in users" :key="user.id">
             <th scope="row">{{ user.id }}</th>
             <td>{{ user.email }}</td>

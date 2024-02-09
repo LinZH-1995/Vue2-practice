@@ -74,6 +74,7 @@ export default {
         </tr>
       </thead>
       <tbody>
+        <h4 v-if="restaurants.length === 0">暫無資料</h4>
         <tr v-for="restaurant in restaurants" :key="restaurant.id">
           <th scope="row">
             {{ restaurant.id }}

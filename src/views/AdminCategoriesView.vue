@@ -143,6 +143,7 @@ export default {
           </tr>
         </thead>
         <tbody>
+          <h4 v-if="categories.length === 0">暫無資料</h4>
           <tr v-for="category in categories" :key="category.id">
             <th scope="row">{{ category.id }}</th>
             <td class="position-relative">

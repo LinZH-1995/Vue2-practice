@@ -15,6 +15,7 @@ export default {
       <strong>{{ followers.length }}</strong> followers (追隨者)
     </div>
     <div class="card-body">
+      <h4 v-if="followers.length === 0">暫無資料</h4>
       <router-link v-for="follower in followers" :key="follower.id"
         :to="{ name: 'user', params: { id: follower.id } }">
         <img :src="follower.image ?? 'http://via.placeholder.com/300x300?text=No+Image'" width="60" height="60" class="me-1">

@@ -51,6 +51,7 @@ export default {
       </h1>
       <hr>
       <RestaurantsTopComponent v-for="restaurant in restaurants" :key="restaurant.id" :initial-restaurant="restaurant" />
+      <h4 v-if="restaurants.length === 0">暫無資料</h4>
     </template>
   </div>
 </template>

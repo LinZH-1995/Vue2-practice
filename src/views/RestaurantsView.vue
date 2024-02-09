@@ -80,6 +80,8 @@ export default {
 
       <RestaurantPaginationComponent class="px-auto" v-if="totalPage.length > 1" :current-page="currentPage"
         :total-page="totalPage" :category-id="categoryId" :previous-page="previousPage" :next-page="nextPage" />
+
+      <h4 v-if="restaurants.length === 0">暫無資料</h4>
     </template>
   </div>
 </template>
