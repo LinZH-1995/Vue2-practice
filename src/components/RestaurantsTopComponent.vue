@@ -12,33 +12,42 @@ export default {
 
   data: function () {
     return {
-      restaurant: this.initialRestaurant
+      restaurant: this.initialRestaurant,
+      isProcessingFavorite: false
     }
   },
 
   methods: {
     async toggleFavorite(restaurantId) {
       try {
+        // start processing
+        this.isProcessingFavorite = true
+
         // if isFavorited = true , call detele
         if (this.restaurant.isFavorited) {
           const response = await restaurantsApi.deleteFavorite(restaurantId)
           if (response.data.status !== 'success') {
+            this.isProcessingFavorite = false // stop processing
             return Toast.fire({ icon: 'error', titleText: response.data.message || 'something wrong' })
           }
           this.restaurant.isFavorited = !this.restaurant.isFavorited
           this.restaurant.FavoriteCount -= 1
+          this.isProcessingFavorite = false // stop processing
           return
         }
 
         // if isFavorited = false , call add
         const response = await restaurantsApi.addFavorite(restaurantId)
         if (response.data.status !== 'success') {
+          this.isProcessingFavorite = false // stop processing
           return Toast.fire({ icon: 'error', titleText: response.data.message || 'something wrong' })
         }
         this.restaurant.isFavorited = !this.restaurant.isFavorited
         this.restaurant.FavoriteCount += 1
+        this.isProcessingFavorite = false // stop processing
 
       } catch (error) {
+        this.isProcessingFavorite = false // stop processing
         Toast.fire({ icon: 'error', titleText: '無法將餐廳加入/刪除最愛，請稍後再試!' })
         console.error(error)
       }
@@ -65,13 +74,16 @@ export default {
           <router-link :to="{ name: 'restaurant', params: { id: restaurant.id } }"
             class="btn btn-primary me-2">Show</router-link>
 
-          <button type="button" class="btn btn-danger me-2" v-if="restaurant.isFavorited"
-            @click.stop.prevent="toggleFavorite(restaurant.id)">
-            移除最愛
-          </button>
-          <button type="button" class="btn btn-primary" v-else @click.stop.prevent="toggleFavorite(restaurant.id)">
-            加到最愛
-          </button>
+          <button type="submit" class="btn btn-primary" v-if="isProcessingFavorite" disabled>處理中...</button>
+          <template v-else>
+            <button type="button" class="btn btn-danger me-2" v-if="restaurant.isFavorited"
+              @click.stop.prevent="toggleFavorite(restaurant.id)">
+              移除最愛
+            </button>
+            <button type="button" class="btn btn-primary" v-else @click.stop.prevent="toggleFavorite(restaurant.id)">
+              加到最愛
+            </button>
+          </template>
         </div>
       </div>
     </div>

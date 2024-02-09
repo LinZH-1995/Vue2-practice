@@ -15,7 +15,8 @@ export default {
       categories: [],
       newCategoryName: '',
       editCategory: {},
-      isLoading: true
+      isLoading: true,
+      isProcessing: false
     }
   },
 
@@ -58,13 +59,19 @@ export default {
 
     async deleteCategory(categoryId) {
       try {
+        // start processing
+        this.isProcessing = true
+
         const response = await adminApi.deleteCategory(categoryId)
         if (response.data.status !== 'success') {
+          this.isProcessing = false // stop processing
           return Toast.fire({ icon: 'error', titleText: response.data.message || 'something wrong' })
         }
         this.categories = this.categories.filter(category => category.id !== categoryId)
+        this.isProcessing = false // stop processing
 
       } catch (error) {
+        this.isProcessing = false // stop processing
         Toast.fire({ icon: 'error', titleText: '無法刪除餐廳類別資料，請稍後再試!' })
         console.error(error)
       }
@@ -152,8 +159,9 @@ export default {
               <button v-show="category.id === editCategory.id" @click.stop.prevent="updateCategory(editCategory)"
                 type="button" class="btn btn-link mr-2">Save</button>
 
-              <button type="button" class="btn btn-link me-2"
-                @click.stop.prevent="deleteCategory(category.id)">Delete</button>
+              <button type="button" class="btn btn-link" v-if="isProcessing" disabled>處理中...</button>
+              <button type="button" class="btn btn-link me-2" @click.stop.prevent="deleteCategory(category.id)"
+                v-else>Delete</button>
             </td>
           </tr>
         </tbody>

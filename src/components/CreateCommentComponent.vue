@@ -12,20 +12,28 @@ export default {
 
   data: function () {
     return {
-      text: ''
+      text: '',
+      isProcessing: false
     }
   },
 
   methods: {
     async handleSubmit() {
       try {
+        //start processing
+        this.isProcessing = true
+
         // check whether text is empty
         const restaurantId = this.restaurantId
         const text = this.text.trim()
-        if (text === '') return Toast.fire({ icon: 'warning', titleText: '評論不可為空!' })
+        if (text === '') {
+          this.isProcessing = false //stop processing
+          return Toast.fire({ icon: 'warning', titleText: '評論不可為空!' })
+        }
 
         const response = await commentsApi.createComment(restaurantId, text)
         if (response.data.status !== 'success') {
+          this.isProcessing = false //stop processing
           return Toast.fire({ icon: 'error', titleText: response.data.message || 'something wrong' })
         }
 
@@ -37,8 +45,10 @@ export default {
         })
 
         this.text = '' // 將表單內的資料清空
+        this.isProcessing = false //stop processing
 
       } catch (error) {
+        this.isProcessing = false //stop processing
         Toast.fire({ icon: 'error', titleText: '無法新增評論，請稍後再試!' })
         console.error(error)
       }
@@ -55,7 +65,9 @@ export default {
     </div>
     <div class="d-flex align-items-center justify-content-between">
       <button type="button" class="btn btn-link" @click="$router.back()">回上一頁</button>
-      <button type="submit" class="btn btn-primary mr-0">Submit</button>
+
+      <button type="submit" class="btn btn-primary" v-if="isProcessing" disabled>處理中...</button>
+      <button type="submit" class="btn btn-primary mr-0" v-else>Submit</button>
     </div>
   </form>
 </template>

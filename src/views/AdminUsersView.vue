@@ -19,7 +19,8 @@ export default {
   data: function () {
     return {
       users: [],
-      isLoading: true
+      isLoading: true,
+      isProcessing: false
     }
   },
 
@@ -39,15 +40,21 @@ export default {
 
     async toggleUserRole(userId) {
       try {
+        //start processing
+        this.isProcessing = true
+
         const user = this.users.find(user => user.id === userId)
         const response = await adminApi.toggleUserRole(userId, user.isAdmin)
         if (response.data.status !== 'success') {
+          this.isProcessing = false //stop processing
           return Toast.fire({ icon: 'error', titleText: response.data.message || 'something wrong' })
         }
 
         user.isAdmin = !user.isAdmin
+        this.isProcessing = false //stop processing
 
       } catch (error) {
+        this.isProcessing = false //stop processing
         Toast.fire({ icon: 'error', titleText: '無法更改使用者權限，請稍後再試!' })
         console.error(error)
       }
@@ -88,10 +95,14 @@ export default {
             <td>
               <button v-show="user.isAdmin && userStore.currentUser.id === user.id" class="btn btn-link" disabled>root
                 user</button>
-              <button v-show="user.isAdmin && userStore.currentUser.id !== user.id"
-                @click.stop.prevent="toggleUserRole(user.id)" type="button" class="btn btn-link">set as user</button>
-              <button v-show="!user.isAdmin && userStore.currentUser.id !== user.id"
-                @click.stop.prevent="toggleUserRole(user.id)" type="button" class="btn btn-link">set as admin</button>
+
+              <button type="submit" class="btn btn-primary" v-if="isProcessing" disabled>處理中...</button>
+              <template v-else>
+                <button v-show="user.isAdmin && userStore.currentUser.id !== user.id"
+                  @click.stop.prevent="toggleUserRole(user.id)" type="button" class="btn btn-link">set as user</button>
+                <button v-show="!user.isAdmin && userStore.currentUser.id !== user.id"
+                  @click.stop.prevent="toggleUserRole(user.id)" type="button" class="btn btn-link">set as admin</button>
+              </template>
             </td>
           </tr>
         </tbody>

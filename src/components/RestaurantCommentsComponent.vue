@@ -19,18 +19,30 @@ export default {
     }
   },
 
+  data: function() {
+    return {
+      isProcessing: false
+    }
+  },
+
   methods: {
     async handleDeleteButtonClick(commentId) {
       try {
+        //start processing
+        this.isProcessing = true
+
         const response = await commentsApi.deleteComment(commentId)
         if (response.data.status !== 'success') {
+          this.isProcessing = false //stop processing
           return Toast.fire({ icon: 'error', titleText: response.data.message || 'something wrong' })
         }
 
         // if delete comment success , tell parent component refresh data
         this.$emit('after-delete-comment', commentId)
+        this.isProcessing = false //stop processing
 
       } catch (error) {
+        this.isProcessing = false //stop processing
         Toast.fire({ icon: 'error', titleText: '無法新增評論，請稍後再試!' })
         console.error(error)
       }
@@ -57,10 +69,13 @@ export default {
             <p>{{ comment.text }}</p>
           </div>
           <div>
-            <button type="button" class="btn btn-danger float-right mb-2" v-if="userStore.currentUser.isAdmin"
-              @click.stop.prevent="handleDeleteButtonClick(comment.id)">
-              Delete
-            </button>
+            <button type="submit" class="btn btn-primary" v-if="isProcessing" disabled>處理中...</button>
+            <template v-else>
+              <button type="button" class="btn btn-danger float-right mb-2" v-if="userStore.currentUser.isAdmin"
+                @click.stop.prevent="handleDeleteButtonClick(comment.id)">
+                Delete
+              </button>
+            </template>
           </div>
         </blockquote>
         <figcaption class="blockquote-footer">
