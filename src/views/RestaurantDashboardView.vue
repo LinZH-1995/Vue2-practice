@@ -1,11 +1,17 @@
 <script>
+import SpinnerComponent from '../components/SpinnerComponent.vue'
 import { restaurantsApi } from '../apis/restaurants'
 import { Toast } from '../utils/sweetalert'
 
 export default {
+  components: {
+    SpinnerComponent
+  },
+
   data: function () {
     return {
-      restaurant: {}
+      restaurant: {},
+      isLoading: true
     }
   },
 
@@ -17,8 +23,10 @@ export default {
           ...response.data.restaurant,
           commentCounts: response.data.restaurant.Comments.length
         }
+        this.isLoading = false // stop loading
 
       } catch (error) {
+        this.isLoading = false // stop loading
         Toast.fire({ icon: 'error', titleText: '無法取得餐廳資料，請稍後再試!' })
         console.error(error)
       }
@@ -40,22 +48,26 @@ export default {
 
 <template>
   <div class="container py-5">
-    <div>
-      <h1>{{ restaurant.name }}</h1>
-      <span class="badge rounded-pill text-bg-secondary mt-1 mb-3">
-        {{ restaurant.Category.name }}
-      </span>
-    </div>
+    <SpinnerComponent v-if="isLoading" />
 
-    <hr>
+    <template v-else>
+      <div>
+        <h1>{{ restaurant.name }}</h1>
+        <span class="badge rounded-pill text-bg-secondary mt-1 mb-3">
+          {{ restaurant.Category.name }}
+        </span>
+      </div>
 
-    <ul>
-      <li>評論數： {{ restaurant.commentCounts }} </li>
-      <li>瀏覽次數： {{ restaurant.viewCounts }} </li>
-    </ul>
+      <hr>
 
-    <button type="button" class="btn btn-link" @click="$router.back()">
-      回上一頁
-    </button>
+      <ul>
+        <li>評論數： {{ restaurant.commentCounts }} </li>
+        <li>瀏覽次數： {{ restaurant.viewCounts }} </li>
+      </ul>
+
+      <button type="button" class="btn btn-link" @click="$router.back()">
+        回上一頁
+      </button>
+    </template>
   </div>
 </template>

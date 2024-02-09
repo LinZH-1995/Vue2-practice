@@ -4,6 +4,7 @@ import UserFollowingsCardComponent from '../components/UserFollowingsCardCompone
 import UserFollowersCardComponent from '../components/UserFollowersCardComponent.vue'
 import UserCommentsCardComponent from '../components/UserCommentsCardComponent.vue'
 import UserFavoritedRestaurantsCardComponent from '../components/UserFavoritedRestaurantsCardComponent.vue'
+import SpinnerComponent from '../components/SpinnerComponent.vue'
 import { usersApi } from '../apis/users'
 import { Toast } from '../utils/sweetalert'
 import { useUserStore } from '../stores/user'
@@ -14,7 +15,8 @@ export default {
     UserFollowingsCardComponent,
     UserFollowersCardComponent,
     UserCommentsCardComponent,
-    UserFavoritedRestaurantsCardComponent
+    UserFavoritedRestaurantsCardComponent,
+    SpinnerComponent
   },
 
   setup() {
@@ -25,7 +27,8 @@ export default {
   data: function () {
     return {
       user: {},
-      isFollowed: false
+      isFollowed: false,
+      isLoading: true
     }
   },
 
@@ -43,8 +46,10 @@ export default {
           followersCounts: profile.Followers?.length,
           followingsCounts: profile.Followings?.length
         }
+        this.isLoading = false // stop loading
 
       } catch (error) {
+        this.isLoading = false // stop loading
         Toast.fire({ icon: 'error', titleText: '無法取得使用者資料，請稍後再試!' })
         console.error(error)
       }
@@ -66,17 +71,21 @@ export default {
 
 <template>
   <div class="container py-5">
-    <UserProfileCardComponent :initial-user="user" :is-current-user="userStore.currentUser.id === user.id"
-      :initial-is-followed="isFollowed" />
-    <div class="row">
-      <div class="col-md-4">
-        <UserFollowingsCardComponent :followings="user.Followings || []" />
-        <UserFollowersCardComponent :followers="user.Followers || []" />
+    <SpinnerComponent v-if="isLoading" />
+
+    <template v-else>
+      <UserProfileCardComponent :initial-user="user" :is-current-user="userStore.currentUser.id === user.id"
+        :initial-is-followed="isFollowed" />
+      <div class="row">
+        <div class="col-md-4">
+          <UserFollowingsCardComponent :followings="user.Followings || []" />
+          <UserFollowersCardComponent :followers="user.Followers || []" />
+        </div>
+        <div class="col-md-8">
+          <UserCommentsCardComponent :comments="user.Comments || []" />
+          <UserFavoritedRestaurantsCardComponent :favorited-restaurants="user.FavoritedRestaurants || []" />
+        </div>
       </div>
-      <div class="col-md-8">
-        <UserCommentsCardComponent :comments="user.Comments || []" />
-        <UserFavoritedRestaurantsCardComponent :favorited-restaurants="user.FavoritedRestaurants || []" />
-      </div>
-    </div>
+    </template>
   </div>
 </template>

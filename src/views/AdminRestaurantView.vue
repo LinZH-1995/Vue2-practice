@@ -1,11 +1,17 @@
 <script>
+import SpinnerComponent from '../components/SpinnerComponent.vue'
 import { adminApi } from '../apis/admin'
 import { Toast } from '../utils/sweetalert'
 
 export default {
+  components: {
+    SpinnerComponent
+  },
+
   data: function () {
     return {
-      restaurant: {}
+      restaurant: {},
+      isLoading: true
     }
   },
 
@@ -14,8 +20,10 @@ export default {
       try {
         const response = await adminApi.getRestaurant(restaurantId)
         this.restaurant = response.data.restaurant
+        this.isLoading = false // stop loading
 
       } catch (error) {
+        this.isLoading = false // stop loading
         Toast.fire({ icon: 'error', titleText: '無法取得餐廳資料，請稍後再試!' })
         console.error(error)
       }
@@ -37,39 +45,42 @@ export default {
 
 <template>
   <div class="container py-5">
-    <div class="row">
-      <div class="col-md-12">
-        <h1>{{ restaurant.name }}</h1>
-        <span class="badge rounded-pill text-bg-secondary mt-1 mb-3">
-          {{ restaurant.Category.name }}
-        </span>
-      </div>
-      <div class="col-md-4">
-        <img class="img-responsive center-block"
-          :src="restaurant.image ?? 'https://via.placeholder.com/350x220/DFDFDF?text=No+Image'"
-          style="width: 250px;margin-bottom: 25px;">
-        <div class="well">
-          <ul class="list-unstyled">
-            <li class="mb-1">
-              <strong>Opening Hour:</strong>
-              {{ restaurant.opening_hours }}
-            </li>
-            <li class="mb-1">
-              <strong>Tel:</strong>
-              {{ restaurant.tel }}
-            </li>
-            <li>
-              <strong>Address:</strong>
-              {{ restaurant.address }}
-            </li>
-          </ul>
+    <SpinnerComponent v-if="isLoading" />
+    <template v-else>
+      <div class="row">
+        <div class="col-md-12">
+          <h1>{{ restaurant.name }}</h1>
+          <span class="badge rounded-pill text-bg-secondary mt-1 mb-3">
+            {{ restaurant.Category.name }}
+          </span>
+        </div>
+        <div class="col-md-4">
+          <img class="img-responsive center-block"
+            :src="restaurant.image ?? 'https://via.placeholder.com/350x220/DFDFDF?text=No+Image'"
+            style="width: 250px;margin-bottom: 25px;">
+          <div class="well">
+            <ul class="list-unstyled">
+              <li class="mb-1">
+                <strong>Opening Hour:</strong>
+                {{ restaurant.opening_hours }}
+              </li>
+              <li class="mb-1">
+                <strong>Tel:</strong>
+                {{ restaurant.tel }}
+              </li>
+              <li>
+                <strong>Address:</strong>
+                {{ restaurant.address }}
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <p>{{ restaurant.description }}</p>
         </div>
       </div>
-      <div class="col-md-8">
-        <p>{{ restaurant.description }}</p>
-      </div>
-    </div>
-    <hr>
-    <button type="button" class="btn btn-link" @click="$router.back()">回上一頁</button>
+      <hr>
+      <button type="button" class="btn btn-link" @click="$router.back()">回上一頁</button>
+    </template>
   </div>
 </template>

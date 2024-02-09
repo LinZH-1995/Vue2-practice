@@ -1,8 +1,13 @@
 <script>
+import SpinnerComponent from '../components/SpinnerComponent.vue'
 import { adminApi } from '../apis/admin'
 import { Toast } from '../utils/sweetalert'
 
 export default {
+  components: {
+    SpinnerComponent
+  },
+
   props: {
     initialRestaurant: {
       type: Object,
@@ -89,13 +94,15 @@ export default {
   watch: {
     initialRestaurant(newData) { // watch initialRestaurant props, if parent component get data then refresh
       this.restaurant = { ...this.restaurant, ...newData }
+      console.log('watch', this.restaurant)
     }
   }
 }
 </script>
 
 <template>
-  <form @submit.stop.prevent="handleSubmit" v-if="!isLoading">
+  <SpinnerComponent v-if="isLoading" />
+  <form @submit.stop.prevent="handleSubmit" v-else>
     <div class="form-group mb-3">* 為必填欄位</div>
 
     <div class="form-group mb-2">

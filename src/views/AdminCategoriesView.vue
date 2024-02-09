@@ -1,18 +1,21 @@
 <script>
 import AdminNavComponent from '../components/AdminNavComponent.vue'
+import SpinnerComponent from '../components/SpinnerComponent.vue'
 import { adminApi } from '../apis/admin'
 import { Toast } from '../utils/sweetalert'
 
 export default {
   components: {
-    AdminNavComponent
+    AdminNavComponent,
+    SpinnerComponent
   },
 
   data: function () {
     return {
       categories: [],
       newCategoryName: '',
-      editCategory: {}
+      editCategory: {},
+      isLoading: true
     }
   },
 
@@ -21,8 +24,10 @@ export default {
       try {
         const response = await adminApi.getAdminCategories()
         this.categories = response.data.categories
+        this.isLoading = false // stop loading
 
       } catch (error) {
+        this.isLoading = false // stop loading
         Toast.fire({ icon: 'error', titleText: '無法取得餐廳類別資料，請稍後再試!' })
         console.error(error)
       }
@@ -120,36 +125,40 @@ export default {
       </div>
     </form>
 
-    <table class="table">
-      <thead class="table-dark">
-        <tr>
-          <th scope="col" width="60">#</th>
-          <th scope="col">Category Name</th>
-          <th scope="col" width="210">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="category in categories" :key="category.id">
-          <th scope="row">{{ category.id }}</th>
-          <td class="position-relative">
-            <div class="category-name" v-show="category.id !== editCategory.id">{{ category.name }}</div>
+    <SpinnerComponent v-if="isLoading" />
+    <template v-else>
+      <table class="table">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col" width="60">#</th>
+            <th scope="col">Category Name</th>
+            <th scope="col" width="210">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="category in categories" :key="category.id">
+            <th scope="row">{{ category.id }}</th>
+            <td class="position-relative">
+              <div class="category-name" v-show="category.id !== editCategory.id">{{ category.name }}</div>
 
-            <input v-show="category.id === editCategory.id" v-model="editCategory.name"
-              v-edit-focus="category.id === editCategory.id" type="text" class="form-control">
-            <span v-show="category.id === editCategory.id" @click.stop.prevent="handleCancel" class="cancel btn">✕</span>
-          </td>
-          <td class="d-flex justify-content-between">
-            <button v-show="category.id !== editCategory.id" @click.stop.prevent="startEdit(category)" type="button"
-              class="btn btn-link mr-2">Edit</button>
-            <button v-show="category.id === editCategory.id" @click.stop.prevent="updateCategory(editCategory)"
-              type="button" class="btn btn-link mr-2">Save</button>
+              <input v-show="category.id === editCategory.id" v-model="editCategory.name"
+                v-edit-focus="category.id === editCategory.id" type="text" class="form-control">
+              <span v-show="category.id === editCategory.id" @click.stop.prevent="handleCancel"
+                class="cancel btn">✕</span>
+            </td>
+            <td class="d-flex justify-content-between">
+              <button v-show="category.id !== editCategory.id" @click.stop.prevent="startEdit(category)" type="button"
+                class="btn btn-link mr-2">Edit</button>
+              <button v-show="category.id === editCategory.id" @click.stop.prevent="updateCategory(editCategory)"
+                type="button" class="btn btn-link mr-2">Save</button>
 
-            <button type="button" class="btn btn-link me-2"
-              @click.stop.prevent="deleteCategory(category.id)">Delete</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+              <button type="button" class="btn btn-link me-2"
+                @click.stop.prevent="deleteCategory(category.id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </template>
   </div>
 </template>
 
