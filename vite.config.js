@@ -3,6 +3,7 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import legacy from '@vitejs/plugin-legacy'
 import vue2 from '@vitejs/plugin-vue2'
+import process from 'node:process'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -18,5 +19,10 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
-  base: '/Vue2-practice/'
+  server: {
+    host: true,
+    port: 3030,
+    strictPort: true
+  },
+  base: process.env.NODE_ENV === "production" ? '/Vue2-practice/' : '/'
 })

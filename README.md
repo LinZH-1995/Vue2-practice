@@ -12,24 +12,49 @@ See [Vite Configuration Reference](https://vitejs.dev/config/).
 
 ## Project Setup
 
+### Local
+```sh
+git clone https://github.com/LinZH-1995/Vue2-practice.git
+```
+```sh
+cd Vue2-practice
+```
 ```sh
 npm install
 ```
-
-### Compile and Hot-Reload for Development
-
 ```sh
 npm run dev
 ```
 
-### Compile and Minify for Production
-
+Optional
 ```sh
 npm run build
 ```
+```sh
+npm run preview
+```
 
-### Lint with [ESLint](https://eslint.org/)
+### Docker
+```sh
+git clone https://github.com/LinZH-1995/Vue2-practice.git
+```
+```sh
+cd Vue2-practice
+```
+```sh
+docker build -t test01 .
+```
+```sh
+docker run -d -p 3030:3030 --name test02 test01
+```
+
+#### Open browser
 
 ```sh
-npm run lint
+http://localhost:3030/
+```
+
+#### Github Page
+```sh
+https://linzh-1995.github.io/Vue2-practice/#/signin
 ```
